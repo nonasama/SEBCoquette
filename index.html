@@ -250,6 +250,63 @@ body.dark .nav-box {
         margin-top: 30px;
     }
 }
+    /* 🖤 SIMPLE MODE — BLACK, WHITE, GREY ONLY */
+body.simple {
+    --bg-color: #ffffff;
+    --text-color: #111111;
+    --card-bg: #ffffff;
+
+    --accent: #111111;
+    --accent-dark: #000000;
+    --accent-soft: #f2f2f2;
+
+    --border-color: #444444;
+    --flag-color: #000000;
+
+    --correct-bg: #e6e6e6;
+    --correct-solid: #000000;
+
+    --wrong-bg: #cccccc;
+    --wrong-solid: #666666;
+}
+
+/* remove mascot in simple mode */
+body.simple .sidebar-mascot {
+    display: none;
+}
+
+/* buttons simplified */
+body.simple .btn,
+body.simple .btn-secondary,
+body.simple .btn-save {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+}
+
+body.simple .btn:hover {
+    background: #f0f0f0;
+}
+
+/* nav boxes simplified */
+body.simple .nav-box {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+}
+
+body.simple .nav-status-bar {
+    background: #bbbbbb;
+}
+
+body.simple .correct-nav .nav-status-bar {
+    background: #000000;
+}
+
+body.simple .wrong-nav .nav-status-bar {
+    background: #666666;
+}
+
 
 </style>
 </head>
@@ -284,6 +341,7 @@ body.dark .nav-box {
     </div>
 
     <button class="btn btn-secondary" id="dark-btn">🌙 Night Mode</button>
+    <button class="btn btn-secondary" id="simple-btn">⬜ Simple Mode</button>
 
     <div id="result-box"></div>
 
@@ -308,6 +366,12 @@ const mascotText = document.getElementById("mascot-text");
 /* DARK MODE */
 document.getElementById("dark-btn").onclick = () =>
     document.body.classList.toggle("dark");
+
+document.getElementById("simple-btn").onclick = () => {
+    document.body.classList.toggle("simple");
+    document.body.classList.remove("dark"); // keep modes separate
+};
+
 
 /* MOTIVATION */
 const messages = ["you got this 💕","one question at a time 🐾","breathe… ✨"];
@@ -432,6 +496,7 @@ window.addEventListener("resize", moveSidebarBeforeFinish);
 
 </body>
 </html>
+
 
 
 
