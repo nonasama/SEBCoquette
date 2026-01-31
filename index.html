@@ -9,18 +9,35 @@
 
 <style>
 :root {
-    --bg-color: #fff2f7;
-    --text-color: #6a3355;
-    --correct-bg: #e8f8ed;
-    --correct-solid: #62b88a;
+    --bg-color: #fff0f6;
+    --text-color: #6a2c4f;
+    --card-bg: #fff9fb;
+
+    --accent: #e75480;
+    --accent-dark: #c93a6b;
+    --accent-soft: #fde1eb;
+
+    --border-color: #f1a9c3;
+    --flag-color: #e75480;
+
+    --correct-bg: #e6f7ec;
+    --correct-solid: #4caf78;
     --wrong-bg: #fdeaea;
-    --wrong-solid: #e07b7b;
-    --flag-color: #f06fa5;
-    --border-color: #f1bfd3;
-    --card-bg: #fffafc;
-    --accent: #f2a7c3;
+    --wrong-solid: #d9534f;
 }
 
+/* 🌙 DARK MODE */
+body.dark {
+    --bg-color: #2b0f1f;
+    --text-color: #f8c6da;
+    --card-bg: #3b1628;
+    --accent: #ff6fae;
+    --accent-dark: #e75480;
+    --accent-soft: #5a1e3a;
+    --border-color: #7a2a4d;
+}
+
+/* BASE */
 body {
     font-family: 'Nunito', sans-serif;
     background: var(--bg-color);
@@ -32,7 +49,7 @@ body {
 .page-title {
     text-align: center;
     font-family: 'Press Start 2P', monospace;
-    color: #f06fa5;
+    color: var(--accent);
     font-size: 1.3rem;
     margin-bottom: 20px;
 }
@@ -61,7 +78,7 @@ body {
     right: 15px;
     cursor: pointer;
     font-size: 1.3rem;
-    color: #ccc;
+    color: #aaa;
 }
 .flag-icon.active { color: var(--flag-color); }
 
@@ -72,8 +89,20 @@ body {
     border-radius: 8px;
     cursor: pointer;
 }
+
 .correct { background: var(--correct-bg); }
 .wrong { background: var(--wrong-bg); }
+
+/* EXPLANATION */
+.explanation-box {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+}
+.revealed .explanation-box { display: block; }
 
 /* BUTTONS */
 .btn {
@@ -87,6 +116,7 @@ body {
     margin-top: 10px;
     font-weight: bold;
 }
+.btn:hover { background: var(--accent-dark); }
 
 .btn-row {
     display: flex;
@@ -94,8 +124,8 @@ body {
     margin-top: 10px;
 }
 
-.btn-secondary { background: #f2b6cb; }
-.btn-save { background: #f06fa5; }
+.btn-secondary { background: #d65b8b; }
+.btn-save { background: #c93a6b; }
 
 /* TEXTAREA */
 textarea {
@@ -105,7 +135,7 @@ textarea {
     border-radius: 8px;
     border: 1px solid var(--border-color);
     padding: 10px;
-    background: #fde6ee;
+    background: var(--accent-soft);
 }
 
 /* SIDEBAR */
@@ -115,7 +145,7 @@ textarea {
     height: calc(100vh - 40px);
     display: flex;
     flex-direction: column;
-    background: white;
+    background: var(--card-bg);
     padding: 15px;
     border-radius: 12px;
     border: 2px solid var(--border-color);
@@ -123,7 +153,6 @@ textarea {
 
 .sidebar-mascot {
     text-align: center;
-    margin-bottom: 10px;
 }
 .sidebar-mascot img {
     width: 110px;
@@ -131,11 +160,12 @@ textarea {
 .mascot-text {
     font-family: 'Press Start 2P', monospace;
     font-size: 0.6rem;
-    color: #f06fa5;
+    color: var(--accent);
     margin-top: 5px;
+    transition: opacity 0.3s;
 }
 
-/* NAV GRID (UNCHANGED LOGIC) */
+/* NAV GRID */
 #nav-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -187,6 +217,18 @@ textarea {
     margin-bottom: 10px;
     text-align: center;
 }
+
+/* 🎉 CONFETTI */
+.confetti {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    animation: fall 3s linear forwards;
+}
+@keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+}
 </style>
 </head>
 
@@ -196,30 +238,30 @@ textarea {
 
 <div class="main-layout">
 
-<!-- QUESTIONS -->
 <div>
     <div id="quiz-container"></div>
 
-    <button class="btn" onclick="submitQuiz()">Finish attempt...</button>
+    <button class="btn" onclick="submitQuiz()">🏁 Finish Attempt</button>
 
     <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
 
     <div class="btn-row">
-        <button class="btn btn-secondary" onclick="loadQuestions()">Load Questions</button>
-        <button class="btn btn-save" onclick="downloadQuiz()">Download Quiz</button>
-        <button class="btn btn-secondary" onclick="resetQuiz(true)">Reset</button>
+        <button class="btn btn-secondary" onclick="loadQuestions()">📥 Load</button>
+        <button class="btn btn-save" onclick="downloadQuiz()">💾 Download</button>
+        <button class="btn btn-secondary" onclick="resetQuiz(true)">🔄 Reset</button>
     </div>
 
-    <button class="btn btn-secondary" id="retry-btn" style="display:none;" onclick="retryWrongQuestions()">Retry Wrong</button>
+    <button class="btn btn-secondary" id="retry-btn" style="display:none;" onclick="retryWrongQuestions()">😤 Retry Wrong</button>
 </div>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
 
     <div class="sidebar-mascot">
         <img src="./images/cat.gif">
         <div class="mascot-text" id="mascot-text">you got this 💕</div>
     </div>
+
+    <button class="btn btn-secondary" onclick="toggleDark()">🌙 Night Mode</button>
 
     <div id="result-box"></div>
 
@@ -228,120 +270,113 @@ textarea {
 
     <div style="flex-grow:1;"></div>
 
-    <button class="btn" onclick="submitQuiz()">Finish Attempt 🎀</button>
+    <button class="btn" onclick="submitQuiz()">🏁 Finish Attempt</button>
 </div>
 </div>
 
 <script>
-/* MOTIVATION */
-const messages = [
-    "you got this 💕",
-    "one question at a time 🐾",
-    "breathe… you’re okay ✨",
-    "future you says thanks 🎀",
-    "proud of you 💗"
-];
-setInterval(() => {
-    document.getElementById("mascot-text").textContent =
-        messages[Math.floor(Math.random() * messages.length)];
-}, 3000);
-
-/* === ORIGINAL WORKING LOGIC === */
-let questions = [];
-let currentQuizSet = [];
-let flaggedQuestions = new Set();
-
-function loadQuestions() {
-    const input = document.getElementById("json-input").value;
-    if (!input) return alert("Paste JSON first!");
-    questions = JSON.parse(input);
-    resetQuiz(true);
+/* 🌙 DARK MODE */
+if(localStorage.dark==="1") document.body.classList.add("dark");
+function toggleDark(){
+    document.body.classList.toggle("dark");
+    localStorage.dark=document.body.classList.contains("dark")?"1":"0";
 }
 
-function downloadQuiz() {
-    const json = document.getElementById("json-input").value;
-    if (!json) return alert("Add questions first!");
+/* 🐱 MOTIVATION */
+const messages = {
+    normal: ["you got this 💕","one question at a time 🐾","breathe… ✨"],
+    proud: ["proud of you 🥹","you survived 😭","still amazing 💗"],
+    perfect: ["PERFECT SCORE OMG 🎉","GENIUS CAT APPROVES 😼","SLAY 💅"]
+};
+setInterval(()=>{
+    const t=document.getElementById("mascot-text");
+    t.style.opacity=0;
+    setTimeout(()=>{
+        t.textContent=messages.normal[Math.floor(Math.random()*messages.normal.length)];
+        t.style.opacity=1;
+    },300);
+},3000);
 
-    const html = document.documentElement.outerHTML;
-    const injected = html.replace(
-        "let questions = [];",
-        `let questions = ${json};`
+/* 🎉 CONFETTI */
+function confetti(){
+    for(let i=0;i<100;i++){
+        const d=document.createElement("div");
+        d.className="confetti";
+        d.style.left=Math.random()*100+"vw";
+        d.style.background=`hsl(${Math.random()*360},100%,70%)`;
+        document.body.appendChild(d);
+        setTimeout(()=>d.remove(),3000);
+    }
+}
+
+/* QUIZ LOGIC */
+let questions=[],currentQuizSet=[];
+function loadQuestions(){questions=JSON.parse(json_input.value);resetQuiz(true);}
+function downloadQuiz(){
+    const html=document.documentElement.outerHTML.replace(
+        "let questions=[],currentQuizSet=[];",
+        `let questions=${json_input.value},currentQuizSet=[];`
     );
-
-    const blob = new Blob([injected], { type: "text/html" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "quiz.html";
-    a.click();
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob([html]));
+    a.download="quiz.html";a.click();
 }
-
-function resetQuiz(full) {
-    if (full) currentQuizSet = [...questions];
-    document.getElementById("result-box").style.display = "none";
-    document.getElementById("retry-btn").style.display = "none";
-    renderQuiz();
-    renderNav();
-}
-
-function renderQuiz() {
-    const c = document.getElementById("quiz-container");
-    c.innerHTML = "";
-    currentQuizSet.forEach((q, i) => {
-        c.innerHTML += `
-        <div class="question-block" id="q${i}">
+function resetQuiz(f){if(f)currentQuizSet=[...questions];quiz_container.innerHTML="";renderQuiz();renderNav();}
+function renderQuiz(){
+    currentQuizSet.forEach((q,i)=>{
+        quiz_container.innerHTML+=`
+        <div class="question-block" id="q-block-${i}">
             <div class="flag-icon" id="flag-${i}" onclick="toggleFlag(${i})">⚑</div>
-            <strong>Question ${i + 1}</strong><br><br>${q.question}
-            ${q.options.map((o, oi) => `
-                <label class="option" id="lbl-${i}-${oi}">
-                    <input type="radio" name="q${i}" value="${oi}"> ${o}
-                </label>`).join("")}
+            <b>Question ${i+1}</b><br><br>${q.question}
+            ${q.options.map((o,oi)=>`
+            <label class="option" id="lbl-${i}-${oi}">
+                <input type="radio" name="q${i}" value="${oi}">${o}
+            </label>`).join("")}
+            <div class="explanation-box"><b>Explanation:</b> ${q.explanation||"—"}</div>
         </div>`;
     });
 }
-
-function renderNav() {
-    const g = document.getElementById("nav-grid");
-    g.innerHTML = "";
-    currentQuizSet.forEach((_, i) => {
-        g.innerHTML += `
-        <a class="nav-box" id="nav-${i}" href="#q${i}">
-            ${i + 1}
-            <div class="nav-status-bar"></div>
+function renderNav(){
+    nav_grid.innerHTML="";
+    currentQuizSet.forEach((_,i)=>{
+        nav_grid.innerHTML+=`
+        <a class="nav-box" id="nav-${i}" href="#q-block-${i}">
+            ${i+1}<div class="nav-status-bar"></div>
         </a>`;
     });
 }
-
-function toggleFlag(i) {
-    document.getElementById(`nav-${i}`).classList.toggle("flagged");
+function toggleFlag(i){
+    nav_grid.children[i].classList.toggle("flagged");
     document.getElementById(`flag-${i}`).classList.toggle("active");
 }
-
-function submitQuiz() {
-    let score = 0;
-    currentQuizSet.forEach((q, i) => {
-        const sel = document.querySelector(`input[name=q${i}]:checked`);
-        const ok = sel && +sel.value === q.answer;
-        if (ok) score++;
-
-        q.options.forEach((_, oi) => {
-            const lbl = document.getElementById(`lbl-${i}-${oi}`);
-            if (oi === q.answer) lbl.classList.add("correct");
-            else if (sel && +sel.value === oi) lbl.classList.add("wrong");
+function submitQuiz(){
+    let score=0;
+    currentQuizSet.forEach((q,i)=>{
+        const s=document.querySelector(`input[name=q${i}]:checked`);
+        const ok=s&&+s.value===q.answer;
+        if(ok)score++;
+        q.options.forEach((_,oi)=>{
+            const l=document.getElementById(`lbl-${i}-${oi}`);
+            if(oi===q.answer)l.classList.add("correct");
+            else if(s&&+s.value===oi)l.classList.add("wrong");
         });
-
-        document.getElementById(`nav-${i}`).classList.add(ok ? "correct-nav" : "wrong-nav");
+        document.getElementById(`q-block-${i}`).classList.add("revealed");
+        nav_grid.children[i].classList.add(ok?"correct-nav":"wrong-nav");
     });
+    result_box.style.display="block";
+    result_box.textContent=`${score}/${currentQuizSet.length}`;
 
-    const r = document.getElementById("result-box");
-    r.style.display = "block";
-    r.textContent = `${score} / ${currentQuizSet.length}`;
-    document.getElementById("retry-btn").style.display = "block";
+    if(score===currentQuizSet.length){
+        document.getElementById("mascot-text").textContent=messages.perfect[0];
+        confetti();
+    } else {
+        document.getElementById("mascot-text").textContent=messages.proud[0];
+    }
 }
-
-function retryWrongQuestions() {
-    currentQuizSet = currentQuizSet.filter((q, i) => {
-        const sel = document.querySelector(`input[name=q${i}]:checked`);
-        return !(sel && +sel.value === q.answer);
+function retryWrongQuestions(){
+    currentQuizSet=currentQuizSet.filter((q,i)=>{
+        const s=document.querySelector(`input[name=q${i}]:checked`);
+        return !(s&&+s.value===q.answer);
     });
     resetQuiz(false);
 }
