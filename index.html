@@ -26,15 +26,17 @@
     --wrong-solid: #d9534f;
 }
 
-/* 🌙 DARK MODE */
+/* 🌙 DARK MODE (BRIGHTER TEXT) */
 body.dark {
     --bg-color: #2b0f1f;
-    --text-color: #f8c6da;
-    --card-bg: #3b1628;
-    --accent: #ff6fae;
-    --accent-dark: #e75480;
-    --accent-soft: #5a1e3a;
-    --border-color: #7a2a4d;
+    --text-color: #ffd6e6;
+    --card-bg: #3a1626;
+
+    --accent: #ff7fb8;
+    --accent-dark: #ff5fa3;
+    --accent-soft: #5a1f3b;
+
+    --border-color: #8a2f55;
 }
 
 /* BASE */
@@ -136,6 +138,7 @@ textarea {
     border: 1px solid var(--border-color);
     padding: 10px;
     background: var(--accent-soft);
+    color: var(--text-color);
 }
 
 /* SIDEBAR */
@@ -217,18 +220,6 @@ textarea {
     margin-bottom: 10px;
     text-align: center;
 }
-
-/* 🎉 CONFETTI */
-.confetti {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    top: -10px;
-    animation: fall 3s linear forwards;
-}
-@keyframes fall {
-    to { transform: translateY(110vh) rotate(360deg); }
-}
 </style>
 </head>
 
@@ -238,22 +229,24 @@ textarea {
 
 <div class="main-layout">
 
+<!-- QUESTIONS -->
 <div>
     <div id="quiz-container"></div>
 
-    <button class="btn" onclick="submitQuiz()">🏁 Finish Attempt</button>
+    <button class="btn" id="finish-btn">🏁 Finish Attempt</button>
 
     <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
 
     <div class="btn-row">
-        <button class="btn btn-secondary" onclick="loadQuestions()">📥 Load</button>
-        <button class="btn btn-save" onclick="downloadQuiz()">💾 Download</button>
-        <button class="btn btn-secondary" onclick="resetQuiz(true)">🔄 Reset</button>
+        <button class="btn btn-secondary" id="load-btn">📥 Load</button>
+        <button class="btn btn-save" id="download-btn">💾 Download</button>
+        <button class="btn btn-secondary" id="reset-btn">🔄 Reset</button>
     </div>
 
-    <button class="btn btn-secondary" id="retry-btn" style="display:none;" onclick="retryWrongQuestions()">😤 Retry Wrong</button>
+    <button class="btn btn-secondary" id="retry-btn" style="display:none;">😤 Retry Wrong</button>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
 
     <div class="sidebar-mascot">
@@ -261,7 +254,7 @@ textarea {
         <div class="mascot-text" id="mascot-text">you got this 💕</div>
     </div>
 
-    <button class="btn btn-secondary" onclick="toggleDark()">🌙 Night Mode</button>
+    <button class="btn btn-secondary" id="dark-btn">🌙 Night Mode</button>
 
     <div id="result-box"></div>
 
@@ -270,113 +263,124 @@ textarea {
 
     <div style="flex-grow:1;"></div>
 
-    <button class="btn" onclick="submitQuiz()">🏁 Finish Attempt</button>
+    <button class="btn" id="finish-btn-side">🏁 Finish Attempt</button>
 </div>
 </div>
 
 <script>
-/* 🌙 DARK MODE */
-if(localStorage.dark==="1") document.body.classList.add("dark");
-function toggleDark(){
-    document.body.classList.toggle("dark");
-    localStorage.dark=document.body.classList.contains("dark")?"1":"0";
-}
+/* === ELEMENT REFERENCES (NO MAGIC) === */
+const quizContainer = document.getElementById("quiz-container");
+const navGrid = document.getElementById("nav-grid");
+const jsonInput = document.getElementById("json-input");
+const resultBox = document.getElementById("result-box");
+const retryBtn = document.getElementById("retry-btn");
+const mascotText = document.getElementById("mascot-text");
 
-/* 🐱 MOTIVATION */
-const messages = {
-    normal: ["you got this 💕","one question at a time 🐾","breathe… ✨"],
-    proud: ["proud of you 🥹","you survived 😭","still amazing 💗"],
-    perfect: ["PERFECT SCORE OMG 🎉","GENIUS CAT APPROVES 😼","SLAY 💅"]
+/* === DARK MODE === */
+document.getElementById("dark-btn").onclick = () => {
+    document.body.classList.toggle("dark");
 };
+
+/* === MOTIVATION === */
+const messages = ["you got this 💕","one question at a time 🐾","breathe… ✨"];
 setInterval(()=>{
-    const t=document.getElementById("mascot-text");
-    t.style.opacity=0;
+    mascotText.style.opacity=0;
     setTimeout(()=>{
-        t.textContent=messages.normal[Math.floor(Math.random()*messages.normal.length)];
-        t.style.opacity=1;
+        mascotText.textContent=messages[Math.floor(Math.random()*messages.length)];
+        mascotText.style.opacity=1;
     },300);
 },3000);
 
-/* 🎉 CONFETTI */
-function confetti(){
-    for(let i=0;i<100;i++){
-        const d=document.createElement("div");
-        d.className="confetti";
-        d.style.left=Math.random()*100+"vw";
-        d.style.background=`hsl(${Math.random()*360},100%,70%)`;
-        document.body.appendChild(d);
-        setTimeout(()=>d.remove(),3000);
-    }
-}
+/* === QUIZ LOGIC === */
+let questions = [];
+let currentQuizSet = [];
 
-/* QUIZ LOGIC */
-let questions=[],currentQuizSet=[];
-function loadQuestions(){questions=JSON.parse(json_input.value);resetQuiz(true);}
-function downloadQuiz(){
-    const html=document.documentElement.outerHTML.replace(
-        "let questions=[],currentQuizSet=[];",
-        `let questions=${json_input.value},currentQuizSet=[];`
+document.getElementById("load-btn").onclick = () => {
+    if(!jsonInput.value) return alert("Paste JSON first!");
+    questions = JSON.parse(jsonInput.value);
+    resetQuiz(true);
+};
+
+document.getElementById("download-btn").onclick = () => {
+    if(!jsonInput.value) return alert("Add questions first!");
+    const html = document.documentElement.outerHTML.replace(
+        "let questions = [];",
+        `let questions = ${jsonInput.value};`
     );
     const a=document.createElement("a");
-    a.href=URL.createObjectURL(new Blob([html]));
-    a.download="quiz.html";a.click();
+    a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));
+    a.download="quiz.html";
+    a.click();
+};
+
+document.getElementById("reset-btn").onclick = () => resetQuiz(true);
+document.getElementById("finish-btn").onclick =
+document.getElementById("finish-btn-side").onclick = submitQuiz;
+retryBtn.onclick = retryWrongQuestions;
+
+function resetQuiz(full){
+    if(full) currentQuizSet=[...questions];
+    quizContainer.innerHTML="";
+    navGrid.innerHTML="";
+    resultBox.style.display="none";
+    retryBtn.style.display="none";
+    renderQuiz();
+    renderNav();
 }
-function resetQuiz(f){if(f)currentQuizSet=[...questions];quiz_container.innerHTML="";renderQuiz();renderNav();}
+
 function renderQuiz(){
     currentQuizSet.forEach((q,i)=>{
-        quiz_container.innerHTML+=`
+        quizContainer.innerHTML+=`
         <div class="question-block" id="q-block-${i}">
             <div class="flag-icon" id="flag-${i}" onclick="toggleFlag(${i})">⚑</div>
-            <b>Question ${i+1}</b><br><br>${q.question}
+            <strong>Question ${i+1}</strong><br><br>${q.question}
             ${q.options.map((o,oi)=>`
-            <label class="option" id="lbl-${i}-${oi}">
-                <input type="radio" name="q${i}" value="${oi}">${o}
-            </label>`).join("")}
-            <div class="explanation-box"><b>Explanation:</b> ${q.explanation||"—"}</div>
+                <label class="option" id="lbl-${i}-${oi}">
+                    <input type="radio" name="q${i}" value="${oi}"> ${o}
+                </label>`).join("")}
+            <div class="explanation-box"><strong>Explanation:</strong> ${q.explanation||"—"}</div>
         </div>`;
     });
 }
+
 function renderNav(){
-    nav_grid.innerHTML="";
     currentQuizSet.forEach((_,i)=>{
-        nav_grid.innerHTML+=`
+        navGrid.innerHTML+=`
         <a class="nav-box" id="nav-${i}" href="#q-block-${i}">
-            ${i+1}<div class="nav-status-bar"></div>
+            ${i+1}
+            <div class="nav-status-bar"></div>
         </a>`;
     });
 }
+
 function toggleFlag(i){
-    nav_grid.children[i].classList.toggle("flagged");
+    document.getElementById(`nav-${i}`).classList.toggle("flagged");
     document.getElementById(`flag-${i}`).classList.toggle("active");
 }
+
 function submitQuiz(){
     let score=0;
     currentQuizSet.forEach((q,i)=>{
-        const s=document.querySelector(`input[name=q${i}]:checked`);
-        const ok=s&&+s.value===q.answer;
-        if(ok)score++;
+        const sel=document.querySelector(`input[name=q${i}]:checked`);
+        const ok=sel && +sel.value===q.answer;
+        if(ok) score++;
         q.options.forEach((_,oi)=>{
-            const l=document.getElementById(`lbl-${i}-${oi}`);
-            if(oi===q.answer)l.classList.add("correct");
-            else if(s&&+s.value===oi)l.classList.add("wrong");
+            const lbl=document.getElementById(`lbl-${i}-${oi}`);
+            if(oi===q.answer) lbl.classList.add("correct");
+            else if(sel && +sel.value===oi) lbl.classList.add("wrong");
         });
         document.getElementById(`q-block-${i}`).classList.add("revealed");
-        nav_grid.children[i].classList.add(ok?"correct-nav":"wrong-nav");
+        document.getElementById(`nav-${i}`).classList.add(ok?"correct-nav":"wrong-nav");
     });
-    result_box.style.display="block";
-    result_box.textContent=`${score}/${currentQuizSet.length}`;
-
-    if(score===currentQuizSet.length){
-        document.getElementById("mascot-text").textContent=messages.perfect[0];
-        confetti();
-    } else {
-        document.getElementById("mascot-text").textContent=messages.proud[0];
-    }
+    resultBox.style.display="block";
+    resultBox.textContent=`${score} / ${currentQuizSet.length}`;
+    retryBtn.style.display="block";
 }
+
 function retryWrongQuestions(){
     currentQuizSet=currentQuizSet.filter((q,i)=>{
-        const s=document.querySelector(`input[name=q${i}]:checked`);
-        return !(s&&+s.value===q.answer);
+        const sel=document.querySelector(`input[name=q${i}]:checked`);
+        return !(sel && +sel.value===q.answer);
     });
     resetQuiz(false);
 }
