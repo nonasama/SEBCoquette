@@ -3,23 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Medical Quiz Builder</title>
+<title>TANGINA MO PATHO 🎀</title>
 
-<!-- Pixel + Cozy Font -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    --bg-color: #ffeef6;
-    --text-color: #6b2d5c;
-    --correct-bg: #e6ffe6;
-    --correct-solid: #4caf50;
-    --wrong-bg: #ffe3e3;
-    --wrong-solid: #e74c3c;
-    --flag-color: #ff6fae;
-    --border-color: #f3b6cf;
-    --card-bg: #fff7fb;
-    --accent: #ff9acb;
+    --bg-color: #fff2f7;
+    --bg-pattern: #fff7fa;
+    --text-color: #6a3355;
+    --accent: #f4a7c1;
+    --accent-soft: #fde1eb;
+    --border-color: #f2bfd3;
+    --card-bg: #fffafc;
+
+    --correct-bg: #e9f8ec;
+    --correct-solid: #5cbf7a;
+    --wrong-bg: #fdeaea;
+    --wrong-solid: #e07070;
 }
 
 /* 🌸 Background */
@@ -28,14 +29,23 @@ body {
     background:
         repeating-linear-gradient(
             45deg,
-            #ffeef6,
-            #ffeef6 12px,
-            #fff7fb 12px,
-            #fff7fb 24px
+            var(--bg-color),
+            var(--bg-color) 14px,
+            var(--bg-pattern) 14px,
+            var(--bg-pattern) 28px
         );
     color: var(--text-color);
     margin: 0;
     padding: 20px;
+}
+
+/* 🎀 Title */
+.page-title {
+    font-family: 'Press Start 2P', monospace;
+    text-align: center;
+    font-size: 1.4rem;
+    color: #f06fa5;
+    margin-bottom: 10px;
 }
 
 /* 🐱 Mascot */
@@ -44,14 +54,14 @@ body {
     margin-bottom: 25px;
 }
 .mascot img {
-    width: 120px;
+    width: 130px;
     image-rendering: pixelated;
 }
 .mascot-text {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.7rem;
-    color: #ff6fae;
     margin-top: 6px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    color: #f06fa5;
 }
 
 /* Layout */
@@ -69,21 +79,21 @@ body {
     top: 20px;
     background: var(--card-bg);
     padding: 15px;
-    border-radius: 16px;
+    border-radius: 18px;
     border: 3px solid var(--border-color);
-    box-shadow: 0 6px 0 #f3b6cf;
+    box-shadow: 0 6px 0 #e9b2c8;
     max-height: 90vh;
     overflow-y: auto;
 }
 
-/* Question card */
+/* Question Card */
 .question-block {
     background: var(--card-bg);
     padding: 25px;
     margin-bottom: 25px;
     border-radius: 18px;
     border: 3px solid var(--border-color);
-    box-shadow: 0 6px 0 #f3b6cf;
+    box-shadow: 0 6px 0 #e9b2c8;
     position: relative;
 }
 
@@ -94,23 +104,23 @@ body {
     right: 15px;
     cursor: pointer;
     font-size: 1.4rem;
-    color: #ffc1dd;
+    color: #f7c2d6;
 }
-.flag-icon.active { color: var(--flag-color); }
+.flag-icon.active { color: #f06fa5; }
 
 /* Options */
 .option {
     display: block;
     padding: 12px;
     margin: 8px 0;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
-    border: 2px solid transparent;
     background: white;
+    border: 2px solid transparent;
     transition: 0.15s;
 }
 .option:hover {
-    background: #ffe3ef;
+    background: var(--accent-soft);
     border-color: var(--accent);
 }
 
@@ -123,30 +133,42 @@ body {
     color: white;
     padding: 14px;
     border: none;
-    border-radius: 14px;
+    border-radius: 16px;
     width: 100%;
     cursor: pointer;
     margin-top: 10px;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.7rem;
-    box-shadow: 0 4px 0 #d66b9e;
+    font-size: 0.65rem;
+    box-shadow: 0 4px 0 #d991ac;
 }
 .btn:active {
     transform: translateY(3px);
-    box-shadow: 0 1px 0 #d66b9e;
+    box-shadow: 0 1px 0 #d991ac;
 }
 
-.btn-secondary { background: #f3a5c8; }
-.btn-save { background: #ff6fae; }
+.btn-secondary { background: #f2b6cb; }
+.btn-save { background: #f06fa5; }
+
+/* Textarea (pink but same size) */
+textarea {
+    width: 100%;
+    height: 120px;
+    margin-top: 40px;
+    border-radius: 14px;
+    border: 2px solid var(--border-color);
+    padding: 12px;
+    background: var(--accent-soft);
+    color: var(--text-color);
+}
 
 /* Result */
 #result-box {
     display: none;
     padding: 15px;
-    background: linear-gradient(135deg, #ff9acb, #ffc1dd);
+    background: linear-gradient(135deg, #f4a7c1, #f7c7d8);
     color: white;
     border-radius: 16px;
-    box-shadow: 0 6px 0 #d66b9e;
+    box-shadow: 0 6px 0 #d991ac;
     text-align: center;
     margin-bottom: 15px;
 }
@@ -157,34 +179,38 @@ body {
     grid-template-columns: repeat(5, 1fr);
     gap: 6px;
 }
+
 .nav-box {
-    height: 50px;
-    border-radius: 12px;
+    height: 48px;
+    border-radius: 14px;
     background: white;
     border: 2px solid var(--border-color);
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
+
 .nav-status-bar {
     width: 100%;
-    height: 12px;
+    height: 10px;
     margin-top: auto;
     background: #eee;
+    border-radius: 0 0 12px 12px;
 }
 .correct-nav .nav-status-bar { background: var(--correct-solid); }
 .wrong-nav .nav-status-bar { background: var(--wrong-solid); }
 
+/* Explanation */
 .explanation-box {
     display: none;
     margin-top: 15px;
     padding: 12px;
-    background: #ffeef6;
+    background: var(--accent-soft);
     border-left: 5px solid var(--accent);
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 12px 12px 0;
 }
 .revealed .explanation-box { display: block; }
 
@@ -197,71 +223,78 @@ body {
 
 <body>
 
-<!-- 🐱 Mascot -->
+<div class="page-title">TANGINA MO PATHO 🎀</div>
+
 <div class="mascot">
-    <img src="cat.gif" alt="Study Cat">
-    <div class="mascot-text">study time! 💕</div>
+    <img src="image/cat.gif" alt="Study Cat">
+    <div class="mascot-text" id="mascot-text">you can do it 💕</div>
 </div>
 
 <div class="main-layout">
-    <div class="questions-column">
-        <div id="quiz-container"></div>
-        <button class="btn" onclick="submitQuiz()">Finish attempt</button>
+<div class="questions-column">
+    <div id="quiz-container"></div>
 
-        <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
+    <button class="btn" onclick="submitQuiz()">Finish Attempt</button>
 
-        <div class="btn-row">
-            <button class="btn btn-secondary" onclick="loadQuestions()">Load</button>
-            <button class="btn btn-save" onclick="downloadQuiz()">Download</button>
-            <button class="btn btn-secondary" onclick="resetQuiz(true)">Reset</button>
-        </div>
+    <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
 
-        <button class="btn" id="retry-btn" onclick="retryWrongQuestions()" style="display:none;background:#ffb347;">
-            Retry Wrong
-        </button>
-    </div>
-
-    <div class="sidebar">
-        <div id="result-box"></div>
-        <h3 style="font-family:'Press Start 2P';font-size:0.7rem;">Navigation</h3>
-        <div id="nav-grid"></div>
+    <div class="btn-row">
+        <button class="btn btn-secondary" onclick="loadQuestions()">Load</button>
+        <button class="btn btn-save" onclick="downloadQuiz()">Download</button>
+        <button class="btn btn-secondary" onclick="resetQuiz(true)">Reset</button>
     </div>
 </div>
 
+<div class="sidebar">
+    <div id="result-box"></div>
+
+    <button class="btn" onclick="submitQuiz()">Finish Attempt 🎀</button>
+
+    <h3 style="font-family:'Press Start 2P';font-size:0.7rem;margin-top:15px;">Navigation</h3>
+    <div id="nav-grid"></div>
+</div>
+</div>
+
 <script>
-let questions = [];
-let currentQuizSet = [];
-let flaggedQuestions = new Set();
+const messages = [
+    "you got this 💕",
+    "one question at a time 🐾",
+    "proud of you 🎀",
+    "breathe… then answer ✨",
+    "future you says thanks 💗"
+];
 
-function loadQuestions() {
-    const input = document.getElementById('json-input').value;
-    try {
-        questions = JSON.parse(input);
+setInterval(()=>{
+    document.getElementById("mascot-text").textContent =
+        messages[Math.floor(Math.random()*messages.length)];
+},3000);
+
+let questions=[],currentQuizSet=[],flaggedQuestions=new Set();
+
+function loadQuestions(){
+    try{
+        questions=JSON.parse(document.getElementById('json-input').value);
         resetQuiz(true);
-    } catch {
-        alert("Invalid JSON 💔");
-    }
+    }catch{alert("Invalid JSON 😭");}
 }
 
-function resetQuiz(fullReset=true) {
-    if(fullReset) currentQuizSet=[...questions];
-    flaggedQuestions.clear();
+function resetQuiz(full=true){
+    if(full)currentQuizSet=[...questions];
     document.getElementById('result-box').style.display='none';
-    document.getElementById('retry-btn').style.display='none';
-    renderQuiz(); renderNav();
+    renderQuiz();renderNav();
 }
 
-function renderQuiz() {
+function renderQuiz(){
     const c=document.getElementById('quiz-container');
     c.innerHTML='';
     currentQuizSet.forEach((q,i)=>{
         c.innerHTML+=`
         <div class="question-block" id="q${i}">
-            <div class="flag-icon" onclick="toggleFlag(${i})">⚑</div>
+            <div class="flag-icon">⚑</div>
             <strong>Question ${i+1}</strong><br><br>${q.question}
             ${q.options.map((o,oi)=>`
             <label class="option" id="lbl-${i}-${oi}">
-                <input type="radio" name="q${i}" value="${oi}">${o}
+                <input type="radio" name="q${i}" value="${oi}"> ${o}
             </label>`).join('')}
             <div class="explanation-box">${q.explanation||''}</div>
         </div>`;
@@ -269,46 +302,34 @@ function renderQuiz() {
 }
 
 function renderNav(){
-    const g=document.getElementById('nav-grid'); g.innerHTML='';
+    const g=document.getElementById('nav-grid');
+    g.innerHTML='';
     currentQuizSet.forEach((_,i)=>{
         g.innerHTML+=`
-        <a class="nav-box" id="nav-${i}" href="#q${i}">
+        <a class="nav-box" href="#q${i}">
             ${i+1}<div class="nav-status-bar"></div>
         </a>`;
     });
 }
 
-function toggleFlag(i){
-    document.getElementById(`nav-${i}`).classList.toggle('flagged');
-}
-
 function submitQuiz(){
     let score=0;
     currentQuizSet.forEach((q,i)=>{
-        const sel=document.querySelector(`input[name=q${i}]:checked`);
-        const ok=sel&&+sel.value===q.answer;
+        const s=document.querySelector(`input[name=q${i}]:checked`);
+        const ok=s&&+s.value===q.answer;
         if(ok)score++;
         q.options.forEach((_,oi)=>{
             const l=document.getElementById(`lbl-${i}-${oi}`);
             if(oi===q.answer)l.classList.add('correct');
-            else if(sel&&+sel.value===oi)l.classList.add('wrong');
+            else if(s&&+s.value===oi)l.classList.add('wrong');
         });
-        document.getElementById(`nav-${i}`).classList.add(ok?'correct-nav':'wrong-nav');
         document.getElementById(`q${i}`).classList.add('revealed');
     });
     const r=document.getElementById('result-box');
     r.style.display='block';
     r.innerHTML=`<strong>${score}/${currentQuizSet.length}</strong>`;
-    document.getElementById('retry-btn').style.display='block';
-}
-
-function retryWrongQuestions(){
-    currentQuizSet=currentQuizSet.filter((q,i)=>{
-        const s=document.querySelector(`input[name=q${i}]:checked`);
-        return !(s&&+s.value===q.answer);
-    });
-    resetQuiz(false);
 }
 </script>
+
 </body>
 </html>
