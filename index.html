@@ -412,9 +412,26 @@ function retryWrongQuestions(){
     });
     resetQuiz(false);
 }
+
+/* 📱 MOBILE: move sidebar before Finish Attempt button */
+function moveSidebarBeforeFinish() {
+    if (window.innerWidth > 768) return;
+
+    const sidebar = document.querySelector(".sidebar");
+    const finishBtn = document.getElementById("finish-btn");
+
+    if (!sidebar || !finishBtn) return;
+
+    finishBtn.parentNode.insertBefore(sidebar, finishBtn);
+}
+
+window.addEventListener("load", moveSidebarBeforeFinish);
+window.addEventListener("resize", moveSidebarBeforeFinish);
+
 </script>
 
 </body>
 </html>
+
 
 
