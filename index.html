@@ -294,52 +294,15 @@ const mascotText = document.getElementById("mascot-text");
 document.getElementById("dark-btn").onclick = () =>
     document.body.classList.toggle("dark");
 
-<script>
-    
-/* 🐱 MOTIVATIONAL QUOTES (FIXED) */
-
-const messagePools = {
-    normal: [
-        "you got this 💕",
-        "one question at a time 🐾",
-        "breathe… you’re okay ✨",
-        "slow is still progress 🌱"
-    ],
-    proud: [
-        "still proud of you 🥹",
-        "you survived 😭",
-        "that was hard and you did it 💗"
-    ],
-    perfect: [
-        "PERFECT SCORE OMG 🎉",
-        "GENIUS CAT APPROVES 😼",
-        "SLAY 💅"
-    ]
-};
-
-let currentMood = "normal";
-let lastMessage = "";
-
-const mascotText = document.getElementById("mascot-text");
-
-setInterval(() => {
-    const pool = messagePools[currentMood];
-    let next;
-
-    do {
-        next = pool[Math.floor(Math.random() * pool.length)];
-    } while (next === lastMessage);
-
-    lastMessage = next;
-
-    mascotText.style.opacity = 0;
-    setTimeout(() => {
-        mascotText.textContent = next;
-        mascotText.style.opacity = 1;
-    }, 300);
-}, 3000);
-</script>
-
+/* MOTIVATION */
+const messages = ["you got this 💕","one question at a time 🐾","breathe… ✨"];
+setInterval(()=>{
+    mascotText.style.opacity=0;
+    setTimeout(()=>{
+        mascotText.textContent=messages[Math.floor(Math.random()*messages.length)];
+        mascotText.style.opacity=1;
+    },300);
+},3000);
 
 /* QUIZ LOGIC */
 let questions = [];
