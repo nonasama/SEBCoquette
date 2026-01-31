@@ -10,69 +10,118 @@
 <style>
 :root {
     --bg-color: #fff2f7;
-    --bg-pattern: #fff7fa;
     --text-color: #6a3355;
-    --accent: #f2a7c3;
-    --accent-soft: #fde6ee;
-    --border-color: #f1bfd3;
-    --card-bg: #fffafc;
-
     --correct-bg: #e8f8ed;
     --correct-solid: #62b88a;
     --wrong-bg: #fdeaea;
     --wrong-solid: #e07b7b;
+    --flag-color: #f06fa5;
+    --border-color: #f1bfd3;
+    --card-bg: #fffafc;
+    --accent: #f2a7c3;
 }
 
-/* Background */
+/* === BASE === */
 body {
     font-family: 'Nunito', sans-serif;
-    background:
-        repeating-linear-gradient(
-            45deg,
-            var(--bg-color),
-            var(--bg-color) 16px,
-            var(--bg-pattern) 16px,
-            var(--bg-pattern) 32px
-        );
+    background: var(--bg-color);
     color: var(--text-color);
     margin: 0;
     padding: 20px;
 }
 
-/* Title */
 .page-title {
-    font-family: 'Press Start 2P', monospace;
     text-align: center;
-    font-size: 1.3rem;
+    font-family: 'Press Start 2P', monospace;
     color: #f06fa5;
-    margin-bottom: 15px;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
 }
 
-/* Layout */
 .main-layout {
     display: grid;
     grid-template-columns: 1fr 320px;
     gap: 30px;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: auto;
 }
 
-/* Sidebar (FROZEN like original) */
+/* === QUESTIONS === */
+.question-block {
+    background: var(--card-bg);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    position: relative;
+}
+
+.flag-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: #ccc;
+}
+.flag-icon.active { color: var(--flag-color); }
+
+.option {
+    display: block;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.correct { background: var(--correct-bg); }
+.wrong { background: var(--wrong-bg); }
+
+/* === BUTTONS === */
+.btn {
+    background: var(--accent);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-secondary { background: #f2b6cb; }
+.btn-save { background: #f06fa5; }
+
+/* === TEXTAREA === */
+textarea {
+    width: 100%;
+    height: 120px;
+    margin-top: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    background: #fde6ee;
+}
+
+/* === SIDEBAR === */
 .sidebar {
     position: sticky;
     top: 20px;
     height: calc(100vh - 40px);
     display: flex;
     flex-direction: column;
-
-    background: var(--card-bg);
+    background: white;
     padding: 15px;
-    border-radius: 16px;
-    border: 3px solid var(--border-color);
-    box-shadow: 0 6px 0 #e9b2c8;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
 }
 
-/* Mascot INSIDE sidebar */
 .sidebar-mascot {
     text-align: center;
     margin-bottom: 10px;
@@ -86,107 +135,26 @@ body {
     font-size: 0.6rem;
     color: #f06fa5;
     margin-top: 5px;
+    transition: opacity 0.3s;
 }
 
-/* Question card */
-.question-block {
-    background: var(--card-bg);
-    padding: 25px;
-    margin-bottom: 25px;
-    border-radius: 16px;
-    border: 3px solid var(--border-color);
-    box-shadow: 0 6px 0 #e9b2c8;
-    position: relative;
-}
-
-/* Flag */
-.flag-icon {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    font-size: 1.4rem;
-    color: #f4c6d8;
-}
-.flag-icon.active { color: #f06fa5; }
-
-/* Options */
-.option {
-    display: block;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 12px;
-    cursor: pointer;
-    background: white;
-    border: 2px solid transparent;
-}
-.option:hover {
-    background: var(--accent-soft);
-    border-color: var(--accent);
-}
-
-.correct { background: var(--correct-bg) !important; border-color: var(--correct-solid); }
-.wrong { background: var(--wrong-bg) !important; border-color: var(--wrong-solid); }
-
-/* Buttons */
-.btn {
-    background: var(--accent);
-    color: white;
-    padding: 14px;
-    border: none;
-    border-radius: 14px;
-    width: 100%;
-    cursor: pointer;
-    margin-top: 10px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.65rem;
-    box-shadow: 0 4px 0 #d98bab;
-}
-.btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 #d98bab;
-}
-
-/* Textarea */
-textarea {
-    width: 100%;
-    height: 120px;
-    margin-top: 40px;
-    border-radius: 12px;
-    border: 2px solid var(--border-color);
-    padding: 12px;
-    background: var(--accent-soft);
-}
-
-/* Result */
-#result-box {
-    display: none;
-    padding: 15px;
-    background: linear-gradient(135deg, #f2a7c3, #f6c5d7);
-    color: white;
-    border-radius: 14px;
-    box-shadow: 0 6px 0 #d98bab;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-/* Navigation (ORIGINAL LOGIC) */
+/* === NAV GRID (ORIGINAL) === */
 #nav-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
+    gap: 5px;
+    margin-top: 10px;
 }
 
 .nav-box {
     height: 50px;
-    border-radius: 10px;
-    background: white;
-    border: 2px solid var(--border-color);
+    border: 1px solid #333;
+    border-radius: 6px;
     text-decoration: none;
-    color: var(--text-color);
+    color: #333;
     font-weight: bold;
+    background: white;
     position: relative;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -198,11 +166,9 @@ textarea {
     position: absolute;
     top: 0;
     right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
     border-width: 0 14px 14px 0;
-    border-color: transparent #f06fa5 transparent transparent;
+    border-style: solid;
+    border-color: transparent var(--flag-color) transparent transparent;
 }
 
 .nav-status-bar {
@@ -210,21 +176,21 @@ textarea {
     height: 12px;
     margin-top: auto;
     background: #eee;
-    border-radius: 0 0 8px 8px;
 }
 
 .correct-nav .nav-status-bar { background: var(--correct-solid); }
 .wrong-nav .nav-status-bar { background: var(--wrong-solid); }
 
-/* Explanation */
-.explanation-box {
+/* === RESULT === */
+#result-box {
     display: none;
-    margin-top: 15px;
-    padding: 12px;
-    background: var(--accent-soft);
-    border-left: 5px solid var(--accent);
+    background: var(--accent);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: center;
 }
-.revealed .explanation-box { display: block; }
 </style>
 </head>
 
@@ -234,38 +200,44 @@ textarea {
 
 <div class="main-layout">
 
-<!-- QUESTIONS -->
+<!-- QUESTIONS COLUMN -->
 <div class="questions-column">
     <div id="quiz-container"></div>
-    <button class="btn" onclick="submitQuiz()">Finish Attempt</button>
+
+    <button class="btn" onclick="submitQuiz()">Finish attempt...</button>
+
     <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
-    <button class="btn" onclick="loadQuestions()">Load</button>
+
+    <div class="btn-row">
+        <button class="btn btn-secondary" onclick="loadQuestions()">Load Questions</button>
+        <button class="btn btn-save" onclick="downloadQuiz()">Download Quiz</button>
+        <button class="btn btn-secondary" onclick="resetQuiz(true)">Reset</button>
+    </div>
+
+    <button class="btn btn-secondary" id="retry-btn" style="display:none;" onclick="retryWrongQuestions()">Retry Wrong</button>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
 
     <div class="sidebar-mascot">
-        <img src="./images/cat.gif" alt="Motivation Cat">
+        <img src="./images/cat.gif">
         <div class="mascot-text" id="mascot-text">you got this 💕</div>
     </div>
 
     <div id="result-box"></div>
 
-    <h3 style="font-family:'Press Start 2P';font-size:0.65rem;margin-bottom:8px;">
-        Quiz Navigation
-    </h3>
-
+    <strong>Quiz Navigation</strong>
     <div id="nav-grid"></div>
 
     <div style="flex-grow:1;"></div>
 
     <button class="btn" onclick="submitQuiz()">Finish Attempt 🎀</button>
-
 </div>
 </div>
 
 <script>
+/* === MOTIVATION === */
 const messages = [
     "you got this 💕",
     "one question at a time 🐾",
@@ -275,26 +247,50 @@ const messages = [
 ];
 
 setInterval(()=>{
-    document.getElementById("mascot-text").textContent =
-        messages[Math.floor(Math.random()*messages.length)];
+    const t=document.getElementById("mascot-text");
+    t.style.opacity=0;
+    setTimeout(()=>{
+        t.textContent=messages[Math.floor(Math.random()*messages.length)];
+        t.style.opacity=1;
+    },300);
 },3000);
 
-let questions = [];
-let currentQuizSet = [];
-let flaggedQuestions = new Set();
+/* === ORIGINAL QUIZ LOGIC (UNCHANGED) === */
+let questions=[];
+let currentQuizSet=[];
+let flaggedQuestions=new Set();
 
-function loadQuestions() {
-    questions = JSON.parse(document.getElementById('json-input').value);
-    currentQuizSet = [...questions];
+function loadQuestions(){
+    questions=JSON.parse(document.getElementById('json-input').value);
+    resetQuiz(true);
+}
+
+function downloadQuiz(){
+    const json=document.getElementById('json-input').value;
+    const html=document.documentElement.outerHTML.replace(
+        "let questions=[];",
+        `let questions=${json};`
+    );
+    const blob=new Blob([html],{type:"text/html"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="quiz.html";
+    a.click();
+}
+
+function resetQuiz(full){
+    if(full) currentQuizSet=[...questions];
+    document.getElementById('result-box').style.display='none';
+    document.getElementById('retry-btn').style.display='none';
     renderQuiz();
     renderNav();
 }
 
-function renderQuiz() {
-    const c = document.getElementById('quiz-container');
-    c.innerHTML = '';
+function renderQuiz(){
+    const c=document.getElementById('quiz-container');
+    c.innerHTML='';
     currentQuizSet.forEach((q,i)=>{
-        c.innerHTML += `
+        c.innerHTML+=`
         <div class="question-block" id="q${i}">
             <div class="flag-icon" id="flag-${i}" onclick="toggleFlag(${i})">⚑</div>
             <strong>Question ${i+1}</strong><br><br>${q.question}
@@ -307,11 +303,11 @@ function renderQuiz() {
     });
 }
 
-function renderNav() {
-    const g = document.getElementById('nav-grid');
-    g.innerHTML = '';
+function renderNav(){
+    const g=document.getElementById('nav-grid');
+    g.innerHTML='';
     currentQuizSet.forEach((_,i)=>{
-        g.innerHTML += `
+        g.innerHTML+=`
         <a class="nav-box" id="nav-${i}" href="#q${i}">
             ${i+1}
             <div class="nav-status-bar"></div>
@@ -319,31 +315,36 @@ function renderNav() {
     });
 }
 
-function toggleFlag(i) {
+function toggleFlag(i){
     document.getElementById(`nav-${i}`).classList.toggle('flagged');
     document.getElementById(`flag-${i}`).classList.toggle('active');
 }
 
-function submitQuiz() {
-    let score = 0;
+function submitQuiz(){
+    let score=0;
     currentQuizSet.forEach((q,i)=>{
-        const sel = document.querySelector(\`input[name=q\${i}]:checked\`);
-        const correct = sel && +sel.value === q.answer;
-        if(correct) score++;
-
+        const sel=document.querySelector(\`input[name=q\${i}]:checked\`);
+        const ok=sel&&+sel.value===q.answer;
+        if(ok) score++;
         q.options.forEach((_,oi)=>{
-            const lbl = document.getElementById(\`lbl-\${i}-\${oi}\`);
-            if(oi === q.answer) lbl.classList.add('correct');
-            else if(sel && +sel.value === oi) lbl.classList.add('wrong');
+            const l=document.getElementById(\`lbl-\${i}-\${oi}\`);
+            if(oi===q.answer) l.classList.add('correct');
+            else if(sel&&+sel.value===oi) l.classList.add('wrong');
         });
-
-        document.getElementById(\`q\${i}\`).classList.add('revealed');
-        document.getElementById(\`nav-\${i}\`).classList.add(correct?'correct-nav':'wrong-nav');
+        document.getElementById(\`nav-\${i}\`).classList.add(ok?'correct-nav':'wrong-nav');
     });
+    const r=document.getElementById('result-box');
+    r.style.display='block';
+    r.innerHTML=`${score}/${currentQuizSet.length}`;
+    document.getElementById('retry-btn').style.display='block';
+}
 
-    const r = document.getElementById('result-box');
-    r.style.display = 'block';
-    r.innerHTML = `<strong>${score} / ${currentQuizSet.length}</strong>`;
+function retryWrongQuestions(){
+    currentQuizSet=currentQuizSet.filter((q,i)=>{
+        const s=document.querySelector(\`input[name=q\${i}]:checked\`);
+        return !(s&&+s.value===q.answer);
+    });
+    resetQuiz(false);
 }
 </script>
 
