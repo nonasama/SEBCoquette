@@ -236,40 +236,18 @@ body.dark .nav-box {
     margin-bottom: 10px;
     text-align: center;
 }
-    /* 📱 MOBILE ONLY: move sidebar to bottom */
+  /* 📱 MOBILE: move sidebar BELOW questions */
 @media (max-width: 768px) {
 
-    /* give space so content isn't hidden behind bottom nav */
-    body {
-        padding-bottom: 160px;
-    }
-
-    /* stack layout into one column */
     .main-layout {
         grid-template-columns: 1fr;
     }
 
-    /* sidebar becomes bottom nav */
+    /* sidebar becomes normal flow */
     .sidebar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        top: auto;
-
+        position: static;
         height: auto;
-        max-height: 150px;
-
-        flex-direction: column;
-        z-index: 1000;
-
-        border-radius: 12px 12px 0 0;
-    }
-
-    /* navigation grid becomes scrollable */
-    #nav-grid {
-        max-height: 90px;
-        overflow-y: auto;
+        margin-top: 30px;
     }
 }
 
@@ -438,4 +416,5 @@ function retryWrongQuestions(){
 
 </body>
 </html>
+
 
