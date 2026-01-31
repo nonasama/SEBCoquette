@@ -26,10 +26,10 @@
     --wrong-solid: #d9534f;
 }
 
-/* 🌙 DARK MODE (BRIGHTER TEXT) */
+/* 🌙 DARK MODE – EYE FRIENDLY */
 body.dark {
     --bg-color: #2b0f1f;
-    --text-color: #ffd6e6;
+    --text-color: #f3c4d8;
     --card-bg: #3a1626;
 
     --accent: #ff7fb8;
@@ -37,6 +37,10 @@ body.dark {
     --accent-soft: #5a1f3b;
 
     --border-color: #8a2f55;
+
+    /* FIXED ANSWER COLORS */
+    --correct-bg: #1f4f3a;
+    --wrong-bg: #5a1f2a;
 }
 
 /* BASE */
@@ -94,6 +98,12 @@ body {
 
 .correct { background: var(--correct-bg); }
 .wrong { background: var(--wrong-bg); }
+
+/* 👀 READABLE TEXT INSIDE ANSWERS (KEY FIX) */
+body.dark .correct,
+body.dark .wrong {
+    color: #f7f3f6;
+}
 
 /* EXPLANATION */
 .explanation-box {
@@ -191,6 +201,12 @@ textarea {
     justify-content: center;
 }
 
+body.dark .nav-box {
+    background: #2f1322;
+    color: #f3c4d8;
+    border-color: #8a2f55;
+}
+
 .nav-box.flagged::after {
     content: "";
     position: absolute;
@@ -229,7 +245,6 @@ textarea {
 
 <div class="main-layout">
 
-<!-- QUESTIONS -->
 <div>
     <div id="quiz-container"></div>
 
@@ -246,7 +261,6 @@ textarea {
     <button class="btn btn-secondary" id="retry-btn" style="display:none;">😤 Retry Wrong</button>
 </div>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
 
     <div class="sidebar-mascot">
@@ -268,7 +282,7 @@ textarea {
 </div>
 
 <script>
-/* === ELEMENT REFERENCES (NO MAGIC) === */
+/* ELEMENTS */
 const quizContainer = document.getElementById("quiz-container");
 const navGrid = document.getElementById("nav-grid");
 const jsonInput = document.getElementById("json-input");
@@ -276,12 +290,11 @@ const resultBox = document.getElementById("result-box");
 const retryBtn = document.getElementById("retry-btn");
 const mascotText = document.getElementById("mascot-text");
 
-/* === DARK MODE === */
-document.getElementById("dark-btn").onclick = () => {
+/* DARK MODE */
+document.getElementById("dark-btn").onclick = () =>
     document.body.classList.toggle("dark");
-};
 
-/* === MOTIVATION === */
+/* MOTIVATION */
 const messages = ["you got this 💕","one question at a time 🐾","breathe… ✨"];
 setInterval(()=>{
     mascotText.style.opacity=0;
@@ -291,7 +304,7 @@ setInterval(()=>{
     },300);
 },3000);
 
-/* === QUIZ LOGIC === */
+/* QUIZ LOGIC */
 let questions = [];
 let currentQuizSet = [];
 
