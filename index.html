@@ -21,7 +21,6 @@
     --accent: #f2a7c3;
 }
 
-/* === BASE === */
 body {
     font-family: 'Nunito', sans-serif;
     background: var(--bg-color);
@@ -46,7 +45,7 @@ body {
     margin: auto;
 }
 
-/* === QUESTIONS === */
+/* QUESTION CARD */
 .question-block {
     background: var(--card-bg);
     padding: 25px;
@@ -76,7 +75,7 @@ body {
 .correct { background: var(--correct-bg); }
 .wrong { background: var(--wrong-bg); }
 
-/* === BUTTONS === */
+/* BUTTONS */
 .btn {
     background: var(--accent);
     color: white;
@@ -98,7 +97,7 @@ body {
 .btn-secondary { background: #f2b6cb; }
 .btn-save { background: #f06fa5; }
 
-/* === TEXTAREA === */
+/* TEXTAREA */
 textarea {
     width: 100%;
     height: 120px;
@@ -109,7 +108,7 @@ textarea {
     background: #fde6ee;
 }
 
-/* === SIDEBAR === */
+/* SIDEBAR */
 .sidebar {
     position: sticky;
     top: 20px;
@@ -128,33 +127,31 @@ textarea {
 }
 .sidebar-mascot img {
     width: 110px;
-    image-rendering: pixelated;
 }
 .mascot-text {
     font-family: 'Press Start 2P', monospace;
     font-size: 0.6rem;
     color: #f06fa5;
     margin-top: 5px;
-    transition: opacity 0.3s;
 }
 
-/* === NAV GRID (ORIGINAL) === */
+/* NAV GRID (UNCHANGED LOGIC) */
 #nav-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 5px;
-    margin-top: 10px;
 }
 
 .nav-box {
     height: 50px;
     border: 1px solid #333;
     border-radius: 6px;
+    background: white;
     text-decoration: none;
     color: #333;
     font-weight: bold;
-    background: white;
     position: relative;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -181,7 +178,6 @@ textarea {
 .correct-nav .nav-status-bar { background: var(--correct-solid); }
 .wrong-nav .nav-status-bar { background: var(--wrong-solid); }
 
-/* === RESULT === */
 #result-box {
     display: none;
     background: var(--accent);
@@ -200,8 +196,8 @@ textarea {
 
 <div class="main-layout">
 
-<!-- QUESTIONS COLUMN -->
-<div class="questions-column">
+<!-- QUESTIONS -->
+<div>
     <div id="quiz-container"></div>
 
     <button class="btn" onclick="submitQuiz()">Finish attempt...</button>
@@ -237,7 +233,7 @@ textarea {
 </div>
 
 <script>
-/* === MOTIVATION === */
+/* MOTIVATION */
 const messages = [
     "you got this 💕",
     "one question at a time 🐾",
@@ -245,104 +241,107 @@ const messages = [
     "future you says thanks 🎀",
     "proud of you 💗"
 ];
+setInterval(() => {
+    document.getElementById("mascot-text").textContent =
+        messages[Math.floor(Math.random() * messages.length)];
+}, 3000);
 
-setInterval(()=>{
-    const t=document.getElementById("mascot-text");
-    t.style.opacity=0;
-    setTimeout(()=>{
-        t.textContent=messages[Math.floor(Math.random()*messages.length)];
-        t.style.opacity=1;
-    },300);
-},3000);
+/* === ORIGINAL WORKING LOGIC === */
+let questions = [];
+let currentQuizSet = [];
+let flaggedQuestions = new Set();
 
-/* === ORIGINAL QUIZ LOGIC (UNCHANGED) === */
-let questions=[];
-let currentQuizSet=[];
-let flaggedQuestions=new Set();
-
-function loadQuestions(){
-    questions=JSON.parse(document.getElementById('json-input').value);
+function loadQuestions() {
+    const input = document.getElementById("json-input").value;
+    if (!input) return alert("Paste JSON first!");
+    questions = JSON.parse(input);
     resetQuiz(true);
 }
 
-function downloadQuiz(){
-    const json=document.getElementById('json-input').value;
-    const html=document.documentElement.outerHTML.replace(
-        "let questions=[];",
-        `let questions=${json};`
+function downloadQuiz() {
+    const json = document.getElementById("json-input").value;
+    if (!json) return alert("Add questions first!");
+
+    const html = document.documentElement.outerHTML;
+    const injected = html.replace(
+        "let questions = [];",
+        `let questions = ${json};`
     );
-    const blob=new Blob([html],{type:"text/html"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="quiz.html";
+
+    const blob = new Blob([injected], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "quiz.html";
     a.click();
 }
 
-function resetQuiz(full){
-    if(full) currentQuizSet=[...questions];
-    document.getElementById('result-box').style.display='none';
-    document.getElementById('retry-btn').style.display='none';
+function resetQuiz(full) {
+    if (full) currentQuizSet = [...questions];
+    document.getElementById("result-box").style.display = "none";
+    document.getElementById("retry-btn").style.display = "none";
     renderQuiz();
     renderNav();
 }
 
-function renderQuiz(){
-    const c=document.getElementById('quiz-container');
-    c.innerHTML='';
-    currentQuizSet.forEach((q,i)=>{
-        c.innerHTML+=`
+function renderQuiz() {
+    const c = document.getElementById("quiz-container");
+    c.innerHTML = "";
+    currentQuizSet.forEach((q, i) => {
+        c.innerHTML += `
         <div class="question-block" id="q${i}">
             <div class="flag-icon" id="flag-${i}" onclick="toggleFlag(${i})">⚑</div>
-            <strong>Question ${i+1}</strong><br><br>${q.question}
-            ${q.options.map((o,oi)=>`
-            <label class="option" id="lbl-${i}-${oi}">
-                <input type="radio" name="q${i}" value="${oi}">${o}
-            </label>`).join('')}
-            <div class="explanation-box">${q.explanation||''}</div>
+            <strong>Question ${i + 1}</strong><br><br>${q.question}
+            ${q.options.map((o, oi) => `
+                <label class="option" id="lbl-${i}-${oi}">
+                    <input type="radio" name="q${i}" value="${oi}"> ${o}
+                </label>`).join("")}
         </div>`;
     });
 }
 
-function renderNav(){
-    const g=document.getElementById('nav-grid');
-    g.innerHTML='';
-    currentQuizSet.forEach((_,i)=>{
-        g.innerHTML+=`
+function renderNav() {
+    const g = document.getElementById("nav-grid");
+    g.innerHTML = "";
+    currentQuizSet.forEach((_, i) => {
+        g.innerHTML += `
         <a class="nav-box" id="nav-${i}" href="#q${i}">
-            ${i+1}
+            ${i + 1}
             <div class="nav-status-bar"></div>
         </a>`;
     });
 }
 
-function toggleFlag(i){
-    document.getElementById(`nav-${i}`).classList.toggle('flagged');
-    document.getElementById(`flag-${i}`).classList.toggle('active');
+function toggleFlag(i) {
+    document.getElementById(`nav-${i}`).classList.toggle("flagged");
+    document.getElementById(`flag-${i}`).classList.toggle("active");
 }
 
-function submitQuiz(){
-    let score=0;
-    currentQuizSet.forEach((q,i)=>{
-        const sel=document.querySelector(\`input[name=q\${i}]:checked\`);
-        const ok=sel&&+sel.value===q.answer;
-        if(ok) score++;
-        q.options.forEach((_,oi)=>{
-            const l=document.getElementById(\`lbl-\${i}-\${oi}\`);
-            if(oi===q.answer) l.classList.add('correct');
-            else if(sel&&+sel.value===oi) l.classList.add('wrong');
+function submitQuiz() {
+    let score = 0;
+    currentQuizSet.forEach((q, i) => {
+        const sel = document.querySelector(`input[name=q${i}]:checked`);
+        const ok = sel && +sel.value === q.answer;
+        if (ok) score++;
+
+        q.options.forEach((_, oi) => {
+            const lbl = document.getElementById(`lbl-${i}-${oi}`);
+            if (oi === q.answer) lbl.classList.add("correct");
+            else if (sel && +sel.value === oi) lbl.classList.add("wrong");
         });
-        document.getElementById(\`nav-\${i}\`).classList.add(ok?'correct-nav':'wrong-nav');
+
+        document.getElementById(`nav-${i}`).classList.add(ok ? "correct-nav" : "wrong-nav");
     });
-    const r=document.getElementById('result-box');
-    r.style.display='block';
-    r.innerHTML=`${score}/${currentQuizSet.length}`;
-    document.getElementById('retry-btn').style.display='block';
+
+    const r = document.getElementById("result-box");
+    r.style.display = "block";
+    r.textContent = `${score} / ${currentQuizSet.length}`;
+    document.getElementById("retry-btn").style.display = "block";
 }
 
-function retryWrongQuestions(){
-    currentQuizSet=currentQuizSet.filter((q,i)=>{
-        const s=document.querySelector(\`input[name=q\${i}]:checked\`);
-        return !(s&&+s.value===q.answer);
+function retryWrongQuestions() {
+    currentQuizSet = currentQuizSet.filter((q, i) => {
+        const sel = document.querySelector(`input[name=q${i}]:checked`);
+        return !(sel && +sel.value === q.answer);
     });
     resetQuiz(false);
 }
