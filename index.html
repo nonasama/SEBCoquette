@@ -8,6 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
+/* ===================== */
+/* 🌸 DEFAULT (PINK) */
+/* ===================== */
 :root {
     --bg-color: #fff0f6;
     --text-color: #6a2c4f;
@@ -21,12 +24,12 @@
     --flag-color: #e75480;
 
     --correct-bg: #e6f7ec;
-    --correct-solid: #4caf78;
     --wrong-bg: #fdeaea;
-    --wrong-solid: #d9534f;
 }
 
-/* 🌙 DARK MODE – EYE FRIENDLY */
+/* ===================== */
+/* 🌙 NIGHT MODE */
+/* ===================== */
 body.dark {
     --bg-color: #2b0f1f;
     --text-color: #f3c4d8;
@@ -38,12 +41,73 @@ body.dark {
 
     --border-color: #8a2f55;
 
-    /* FIXED ANSWER COLORS */
     --correct-bg: #1f4f3a;
     --wrong-bg: #5a1f2a;
 }
 
-/* BASE */
+/* ===================== */
+/* 🎨 FULL PAGE THEMES */
+/* ===================== */
+
+/* 🖤 Black & White */
+body.theme-bw {
+    --bg-color: #f5f5f5;
+    --text-color: #222;
+    --card-bg: #ffffff;
+    --accent: #444;
+    --accent-dark: #111;
+    --accent-soft: #eaeaea;
+    --border-color: #ccc;
+    --flag-color: #000;
+    --correct-bg: #dcdcdc;
+    --wrong-bg: #cfcfcf;
+}
+
+/* 💙 Blue */
+body.theme-blue {
+    --bg-color: #eef5ff;
+    --text-color: #1e3a5f;
+    --card-bg: #f8fbff;
+    --accent: #4a90e2;
+    --accent-dark: #357abd;
+    --accent-soft: #e3effc;
+    --border-color: #aac7eb;
+    --flag-color: #4a90e2;
+    --correct-bg: #dff0ff;
+    --wrong-bg: #ffe3e3;
+}
+
+/* 🍷 Maroon */
+body.theme-maroon {
+    --bg-color: #2a0f1a;
+    --text-color: #f2c6d6;
+    --card-bg: #3b1624;
+    --accent: #7a1f3d;
+    --accent-dark: #5c162e;
+    --accent-soft: #5a2437;
+    --border-color: #8c3a55;
+    --flag-color: #d16a8c;
+    --correct-bg: #2f5a45;
+    --wrong-bg: #5a1f2a;
+}
+
+/* 💚 Green */
+body.theme-green {
+    --bg-color: #eef6f1;
+    --text-color: #1f4d3a;
+    --card-bg: #f6fbf8;
+    --accent: #3c8d5a;
+    --accent-dark: #2f6e45;
+    --accent-soft: #e1f1e9;
+    --border-color: #9fd1b7;
+    --flag-color: #3c8d5a;
+    --correct-bg: #cfeee0;
+    --wrong-bg: #f6d6d6;
+}
+
+/* ===================== */
+/* BASE STYLES */
+/* ===================== */
 body {
     font-family: 'Nunito', sans-serif;
     background: var(--bg-color);
@@ -68,7 +132,6 @@ body {
     margin: auto;
 }
 
-/* QUESTION CARD */
 .question-block {
     background: var(--card-bg);
     padding: 25px;
@@ -83,63 +146,44 @@ body {
     top: 15px;
     right: 15px;
     cursor: pointer;
-    font-size: 1.3rem;
     color: #aaa;
 }
-.flag-icon.active { color: var(--flag-color); }
 
 .option {
     display: block;
     padding: 10px;
     margin: 6px 0;
     border-radius: 8px;
-    cursor: pointer;
 }
 
 .correct { background: var(--correct-bg); }
 .wrong { background: var(--wrong-bg); }
 
-/* 👀 READABLE TEXT INSIDE ANSWERS (KEY FIX) */
 body.dark .correct,
-body.dark .wrong {
-    color: #f7f3f6;
-}
+body.dark .wrong { color: #f7f3f6; }
 
-/* EXPLANATION */
 .explanation-box {
     display: none;
     margin-top: 15px;
     padding: 12px;
     background: var(--accent-soft);
     border-left: 4px solid var(--accent);
-    border-radius: 0 8px 8px 0;
 }
 .revealed .explanation-box { display: block; }
 
-/* BUTTONS */
 .btn {
     background: var(--accent);
     color: white;
     padding: 12px;
-    border: none;
     border-radius: 8px;
-    width: 100%;
+    border: none;
     cursor: pointer;
+    width: 100%;
     margin-top: 10px;
-    font-weight: bold;
 }
+
 .btn:hover { background: var(--accent-dark); }
 
-.btn-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.btn-secondary { background: #d65b8b; }
-.btn-save { background: #c93a6b; }
-
-/* TEXTAREA */
 textarea {
     width: 100%;
     height: 120px;
@@ -151,7 +195,6 @@ textarea {
     color: var(--text-color);
 }
 
-/* SIDEBAR */
 .sidebar {
     position: sticky;
     top: 20px;
@@ -164,77 +207,13 @@ textarea {
     border: 2px solid var(--border-color);
 }
 
-.sidebar-mascot {
-    text-align: center;
-}
-.sidebar-mascot img {
-    width: 110px;
-}
+.sidebar-mascot { text-align: center; }
+
 .mascot-text {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Press Start 2P';
     font-size: 0.6rem;
     color: var(--accent);
     margin-top: 5px;
-    transition: opacity 0.3s;
-}
-
-/* NAV GRID */
-#nav-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
-}
-
-.nav-box {
-    height: 50px;
-    border: 1px solid #333;
-    border-radius: 6px;
-    background: white;
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-    position: relative;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-body.dark .nav-box {
-    background: #2f1322;
-    color: #f3c4d8;
-    border-color: #8a2f55;
-}
-
-.nav-box.flagged::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    border-width: 0 14px 14px 0;
-    border-style: solid;
-    border-color: transparent var(--flag-color) transparent transparent;
-}
-
-.nav-status-bar {
-    width: 100%;
-    height: 12px;
-    margin-top: auto;
-    background: #eee;
-}
-
-.correct-nav .nav-status-bar { background: var(--correct-solid); }
-.wrong-nav .nav-status-bar { background: var(--wrong-solid); }
-
-#result-box {
-    display: none;
-    background: var(--accent);
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    text-align: center;
 }
 </style>
 </head>
@@ -247,193 +226,61 @@ body.dark .nav-box {
 
 <div>
     <div id="quiz-container"></div>
-
     <button class="btn" id="finish-btn">🏁 Finish Attempt</button>
 
     <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
 
-    <div class="btn-row">
-        <button class="btn btn-secondary" id="load-btn">📥 Load</button>
-        <button class="btn btn-save" id="download-btn">💾 Download</button>
-        <button class="btn btn-secondary" id="reset-btn">🔄 Reset</button>
-    </div>
-
-    <button class="btn btn-secondary" id="retry-btn" style="display:none;">😤 Retry Wrong</button>
+    <button class="btn" id="load-btn">📥 Load</button>
 </div>
 
 <div class="sidebar">
-
     <div class="sidebar-mascot">
-        <img src="./images/cat.gif">
+        <img src="./images/cat.gif" width="100">
         <div class="mascot-text" id="mascot-text">you got this 💕</div>
     </div>
 
-    <button class="btn btn-secondary" id="dark-btn">🌙 Night Mode</button>
+    <button class="btn" onclick="toggleDark()">🌙 Night Mode</button>
 
-    <div id="result-box"></div>
-
-    <strong>Quiz Navigation</strong>
-    <div id="nav-grid"></div>
-
-    <div style="flex-grow:1;"></div>
-
-    <button class="btn" id="finish-btn-side">🏁 Finish Attempt</button>
+    <div style="margin-top:10px;">
+        <button class="btn" onclick="setTheme('bw')">🖤</button>
+        <button class="btn" onclick="setTheme('blue')">💙</button>
+        <button class="btn" onclick="setTheme('maroon')">🍷</button>
+        <button class="btn" onclick="setTheme('green')">💚</button>
+    </div>
 </div>
+
 </div>
 
 <script>
-/* ELEMENTS */
+const mascotText = document.getElementById("mascot-text");
 const quizContainer = document.getElementById("quiz-container");
-const navGrid = document.getElementById("nav-grid");
 const jsonInput = document.getElementById("json-input");
-const resultBox = document.getElementById("result-box");
-const retryBtn = document.getElementById("retry-btn");
-const mascotText = document.getElementById("mascot-text");
 
-/* DARK MODE */
-document.getElementById("dark-btn").onclick = () =>
+function toggleDark() {
     document.body.classList.toggle("dark");
+}
 
-<script>
-    
-/* 🐱 MOTIVATIONAL QUOTES (FIXED) */
+function setTheme(theme) {
+    document.body.classList.remove("theme-bw","theme-blue","theme-maroon","theme-green");
+    document.body.classList.add(`theme-${theme}`);
+}
 
-const messagePools = {
-    normal: [
-        "you got this 💕",
-        "one question at a time 🐾",
-        "breathe… you’re okay ✨",
-        "slow is still progress 🌱"
-    ],
-    proud: [
-        "still proud of you 🥹",
-        "you survived 😭",
-        "that was hard and you did it 💗"
-    ],
-    perfect: [
-        "PERFECT SCORE OMG 🎉",
-        "GENIUS CAT APPROVES 😼",
-        "SLAY 💅"
-    ]
-};
+/* MOTIVATION */
+const messages = [
+    "you got this 💕",
+    "one question at a time 🐾",
+    "breathe… ✨",
+    "slow progress is still progress 🌱"
+];
 
-let currentMood = "normal";
-let lastMessage = "";
+setInterval(()=>{
+    mascotText.textContent = messages[Math.floor(Math.random()*messages.length)];
+},3000);
 
-const mascotText = document.getElementById("mascot-text");
-
-setInterval(() => {
-    const pool = messagePools[currentMood];
-    let next;
-
-    do {
-        next = pool[Math.floor(Math.random() * pool.length)];
-    } while (next === lastMessage);
-
-    lastMessage = next;
-
-    mascotText.style.opacity = 0;
-    setTimeout(() => {
-        mascotText.textContent = next;
-        mascotText.style.opacity = 1;
-    }, 300);
-}, 3000);
-</script>
-
-
-/* QUIZ LOGIC */
-let questions = [];
-let currentQuizSet = [];
-
+/* BASIC LOAD DEMO */
 document.getElementById("load-btn").onclick = () => {
-    if(!jsonInput.value) return alert("Paste JSON first!");
-    questions = JSON.parse(jsonInput.value);
-    resetQuiz(true);
+    quizContainer.innerHTML = "<p>Questions loaded! (demo)</p>";
 };
-
-document.getElementById("download-btn").onclick = () => {
-    if(!jsonInput.value) return alert("Add questions first!");
-    const html = document.documentElement.outerHTML.replace(
-        "let questions = [];",
-        `let questions = ${jsonInput.value};`
-    );
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));
-    a.download="quiz.html";
-    a.click();
-};
-
-document.getElementById("reset-btn").onclick = () => resetQuiz(true);
-document.getElementById("finish-btn").onclick =
-document.getElementById("finish-btn-side").onclick = submitQuiz;
-retryBtn.onclick = retryWrongQuestions;
-
-function resetQuiz(full){
-    if(full) currentQuizSet=[...questions];
-    quizContainer.innerHTML="";
-    navGrid.innerHTML="";
-    resultBox.style.display="none";
-    retryBtn.style.display="none";
-    renderQuiz();
-    renderNav();
-}
-
-function renderQuiz(){
-    currentQuizSet.forEach((q,i)=>{
-        quizContainer.innerHTML+=`
-        <div class="question-block" id="q-block-${i}">
-            <div class="flag-icon" id="flag-${i}" onclick="toggleFlag(${i})">⚑</div>
-            <strong>Question ${i+1}</strong><br><br>${q.question}
-            ${q.options.map((o,oi)=>`
-                <label class="option" id="lbl-${i}-${oi}">
-                    <input type="radio" name="q${i}" value="${oi}"> ${o}
-                </label>`).join("")}
-            <div class="explanation-box"><strong>Explanation:</strong> ${q.explanation||"—"}</div>
-        </div>`;
-    });
-}
-
-function renderNav(){
-    currentQuizSet.forEach((_,i)=>{
-        navGrid.innerHTML+=`
-        <a class="nav-box" id="nav-${i}" href="#q-block-${i}">
-            ${i+1}
-            <div class="nav-status-bar"></div>
-        </a>`;
-    });
-}
-
-function toggleFlag(i){
-    document.getElementById(`nav-${i}`).classList.toggle("flagged");
-    document.getElementById(`flag-${i}`).classList.toggle("active");
-}
-
-function submitQuiz(){
-    let score=0;
-    currentQuizSet.forEach((q,i)=>{
-        const sel=document.querySelector(`input[name=q${i}]:checked`);
-        const ok=sel && +sel.value===q.answer;
-        if(ok) score++;
-        q.options.forEach((_,oi)=>{
-            const lbl=document.getElementById(`lbl-${i}-${oi}`);
-            if(oi===q.answer) lbl.classList.add("correct");
-            else if(sel && +sel.value===oi) lbl.classList.add("wrong");
-        });
-        document.getElementById(`q-block-${i}`).classList.add("revealed");
-        document.getElementById(`nav-${i}`).classList.add(ok?"correct-nav":"wrong-nav");
-    });
-    resultBox.style.display="block";
-    resultBox.textContent=`${score} / ${currentQuizSet.length}`;
-    retryBtn.style.display="block";
-}
-
-function retryWrongQuestions(){
-    currentQuizSet=currentQuizSet.filter((q,i)=>{
-        const sel=document.querySelector(`input[name=q${i}]:checked`);
-        return !(sel && +sel.value===q.answer);
-    });
-    resetQuiz(false);
-}
 </script>
 
 </body>
