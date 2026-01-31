@@ -45,23 +45,7 @@ body {
     text-align: center;
     font-size: 1.3rem;
     color: #f06fa5;
-    margin-bottom: 10px;
-}
-
-/* Mascot */
-.mascot {
-    text-align: center;
-    margin-bottom: 25px;
-}
-.mascot img {
-    width: 130px;
-    image-rendering: pixelated;
-}
-.mascot-text {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.65rem;
-    color: #f06fa5;
-    margin-top: 6px;
+    margin-bottom: 15px;
 }
 
 /* Layout */
@@ -73,10 +57,14 @@ body {
     margin: 0 auto;
 }
 
-/* Sidebar */
+/* Sidebar (FROZEN like original) */
 .sidebar {
     position: sticky;
     top: 20px;
+    height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+
     background: var(--card-bg);
     padding: 15px;
     border-radius: 16px;
@@ -84,7 +72,23 @@ body {
     box-shadow: 0 6px 0 #e9b2c8;
 }
 
-/* Question */
+/* Mascot INSIDE sidebar */
+.sidebar-mascot {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.sidebar-mascot img {
+    width: 110px;
+    image-rendering: pixelated;
+}
+.mascot-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: #f06fa5;
+    margin-top: 5px;
+}
+
+/* Question card */
 .question-block {
     background: var(--card-bg);
     padding: 25px;
@@ -95,7 +99,7 @@ body {
     position: relative;
 }
 
-/* Flag icon */
+/* Flag */
 .flag-icon {
     position: absolute;
     top: 15px;
@@ -104,9 +108,7 @@ body {
     font-size: 1.4rem;
     color: #f4c6d8;
 }
-.flag-icon.active {
-    color: #f06fa5;
-}
+.flag-icon.active { color: #f06fa5; }
 
 /* Options */
 .option {
@@ -165,19 +167,18 @@ textarea {
     border-radius: 14px;
     box-shadow: 0 6px 0 #d98bab;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
-/* Navigation (RESTORED LIKE ORIGINAL) */
+/* Navigation (ORIGINAL LOGIC) */
 #nav-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 6px;
-    margin-top: 10px;
 }
 
 .nav-box {
-    height: 48px;
+    height: 50px;
     border-radius: 10px;
     background: white;
     border: 2px solid var(--border-color);
@@ -185,6 +186,7 @@ textarea {
     color: var(--text-color);
     font-weight: bold;
     position: relative;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -230,38 +232,43 @@ textarea {
 
 <div class="page-title">🎀TANGINA MO PATHO🎀</div>
 
-<div class="mascot">
-    <!-- IMPORTANT: make sure folder name is EXACT -->
-    <img src="./images/cat.gif" alt="Motivation Cat"
-         onerror="this.style.display='none'">
-    <div class="mascot-text" id="mascot-text">you got this 💕</div>
-</div>
-
 <div class="main-layout">
+
+<!-- QUESTIONS -->
 <div class="questions-column">
     <div id="quiz-container"></div>
-
     <button class="btn" onclick="submitQuiz()">Finish Attempt</button>
-
     <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
-
     <button class="btn" onclick="loadQuestions()">Load</button>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
+
+    <div class="sidebar-mascot">
+        <img src="./images/cat.gif" alt="Motivation Cat">
+        <div class="mascot-text" id="mascot-text">you got this 💕</div>
+    </div>
+
     <div id="result-box"></div>
+
+    <h3 style="font-family:'Press Start 2P';font-size:0.65rem;margin-bottom:8px;">
+        Quiz Navigation
+    </h3>
+
+    <div id="nav-grid"></div>
+
+    <div style="flex-grow:1;"></div>
 
     <button class="btn" onclick="submitQuiz()">Finish Attempt 🎀</button>
 
-    <h3 style="font-family:'Press Start 2P';font-size:0.65rem;margin-top:15px;">Navigation</h3>
-    <div id="nav-grid"></div>
 </div>
 </div>
 
 <script>
 const messages = [
     "you got this 💕",
-    "one step at a time 🐾",
+    "one question at a time 🐾",
     "breathe… you’re okay ✨",
     "future you says thanks 🎀",
     "proud of you 💗"
@@ -313,27 +320,25 @@ function renderNav() {
 }
 
 function toggleFlag(i) {
-    const nav = document.getElementById(`nav-${i}`);
-    const flag = document.getElementById(`flag-${i}`);
-    nav.classList.toggle('flagged');
-    flag.classList.toggle('active');
+    document.getElementById(`nav-${i}`).classList.toggle('flagged');
+    document.getElementById(`flag-${i}`).classList.toggle('active');
 }
 
 function submitQuiz() {
     let score = 0;
     currentQuizSet.forEach((q,i)=>{
-        const sel = document.querySelector(`input[name=q${i}]:checked`);
+        const sel = document.querySelector(\`input[name=q\${i}]:checked\`);
         const correct = sel && +sel.value === q.answer;
         if(correct) score++;
 
         q.options.forEach((_,oi)=>{
-            const lbl = document.getElementById(`lbl-${i}-${oi}`);
+            const lbl = document.getElementById(\`lbl-\${i}-\${oi}\`);
             if(oi === q.answer) lbl.classList.add('correct');
             else if(sel && +sel.value === oi) lbl.classList.add('wrong');
         });
 
-        document.getElementById(`q${i}`).classList.add('revealed');
-        document.getElementById(`nav-${i}`).classList.add(correct?'correct-nav':'wrong-nav');
+        document.getElementById(\`q\${i}\`).classList.add('revealed');
+        document.getElementById(\`nav-\${i}\`).classList.add(correct?'correct-nav':'wrong-nav');
     });
 
     const r = document.getElementById('result-box');
