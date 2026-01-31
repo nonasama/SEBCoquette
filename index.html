@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Quiz Builder</title>
+
+<!-- Pixel + Cozy Font -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-color: #ffeef6;
+    --text-color: #6b2d5c;
+    --correct-bg: #e6ffe6;
+    --correct-solid: #4caf50;
+    --wrong-bg: #ffe3e3;
+    --wrong-solid: #e74c3c;
+    --flag-color: #ff6fae;
+    --border-color: #f3b6cf;
+    --card-bg: #fff7fb;
+    --accent: #ff9acb;
+}
+
+/* 🌸 Background */
+body {
+    font-family: 'Nunito', sans-serif;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #ffeef6,
+            #ffeef6 12px,
+            #fff7fb 12px,
+            #fff7fb 24px
+        );
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+}
+
+/* 🐱 Mascot */
+.mascot {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.mascot img {
+    width: 120px;
+    image-rendering: pixelated;
+}
+.mascot-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    color: #ff6fae;
+    margin-top: 6px;
+}
+
+/* Layout */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sidebar */
+.sidebar {
+    position: sticky;
+    top: 20px;
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 16px;
+    border: 3px solid var(--border-color);
+    box-shadow: 0 6px 0 #f3b6cf;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Question card */
+.question-block {
+    background: var(--card-bg);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 18px;
+    border: 3px solid var(--border-color);
+    box-shadow: 0 6px 0 #f3b6cf;
+    position: relative;
+}
+
+/* Flag */
+.flag-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: #ffc1dd;
+}
+.flag-icon.active { color: var(--flag-color); }
+
+/* Options */
+.option {
+    display: block;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: white;
+    transition: 0.15s;
+}
+.option:hover {
+    background: #ffe3ef;
+    border-color: var(--accent);
+}
+
+.correct { background: var(--correct-bg) !important; border-color: var(--correct-solid); }
+.wrong { background: var(--wrong-bg) !important; border-color: var(--wrong-solid); }
+
+/* Buttons */
+.btn {
+    background: var(--accent);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    box-shadow: 0 4px 0 #d66b9e;
+}
+.btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #d66b9e;
+}
+
+.btn-secondary { background: #f3a5c8; }
+.btn-save { background: #ff6fae; }
+
+/* Result */
+#result-box {
+    display: none;
+    padding: 15px;
+    background: linear-gradient(135deg, #ff9acb, #ffc1dd);
+    color: white;
+    border-radius: 16px;
+    box-shadow: 0 6px 0 #d66b9e;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Navigation */
+#nav-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+.nav-box {
+    height: 50px;
+    border-radius: 12px;
+    background: white;
+    border: 2px solid var(--border-color);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.nav-status-bar {
+    width: 100%;
+    height: 12px;
+    margin-top: auto;
+    background: #eee;
+}
+.correct-nav .nav-status-bar { background: var(--correct-solid); }
+.wrong-nav .nav-status-bar { background: var(--wrong-solid); }
+
+.explanation-box {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    background: #ffeef6;
+    border-left: 5px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+}
+.revealed .explanation-box { display: block; }
+
+@media (max-width: 900px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🐱 Mascot -->
+<div class="mascot">
+    <img src="cat.gif" alt="Study Cat">
+    <div class="mascot-text">study time! 💕</div>
+</div>
+
+<div class="main-layout">
+    <div class="questions-column">
+        <div id="quiz-container"></div>
+        <button class="btn" onclick="submitQuiz()">Finish attempt</button>
+
+        <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="loadQuestions()">Load</button>
+            <button class="btn btn-save" onclick="downloadQuiz()">Download</button>
+            <button class="btn btn-secondary" onclick="resetQuiz(true)">Reset</button>
+        </div>
+
+        <button class="btn" id="retry-btn" onclick="retryWrongQuestions()" style="display:none;background:#ffb347;">
+            Retry Wrong
+        </button>
+    </div>
+
+    <div class="sidebar">
+        <div id="result-box"></div>
+        <h3 style="font-family:'Press Start 2P';font-size:0.7rem;">Navigation</h3>
+        <div id="nav-grid"></div>
+    </div>
+</div>
+
+<script>
+let questions = [];
+let currentQuizSet = [];
+let flaggedQuestions = new Set();
+
+function loadQuestions() {
+    const input = document.getElementById('json-input').value;
+    try {
+        questions = JSON.parse(input);
+        resetQuiz(true);
+    } catch {
+        alert("Invalid JSON 💔");
+    }
+}
+
+function resetQuiz(fullReset=true) {
+    if(fullReset) currentQuizSet=[...questions];
+    flaggedQuestions.clear();
+    document.getElementById('result-box').style.display='none';
+    document.getElementById('retry-btn').style.display='none';
+    renderQuiz(); renderNav();
+}
+
+function renderQuiz() {
+    const c=document.getElementById('quiz-container');
+    c.innerHTML='';
+    currentQuizSet.forEach((q,i)=>{
+        c.innerHTML+=`
+        <div class="question-block" id="q${i}">
+            <div class="flag-icon" onclick="toggleFlag(${i})">⚑</div>
+            <strong>Question ${i+1}</strong><br><br>${q.question}
+            ${q.options.map((o,oi)=>`
+            <label class="option" id="lbl-${i}-${oi}">
+                <input type="radio" name="q${i}" value="${oi}">${o}
+            </label>`).join('')}
+            <div class="explanation-box">${q.explanation||''}</div>
+        </div>`;
+    });
+}
+
+function renderNav(){
+    const g=document.getElementById('nav-grid'); g.innerHTML='';
+    currentQuizSet.forEach((_,i)=>{
+        g.innerHTML+=`
+        <a class="nav-box" id="nav-${i}" href="#q${i}">
+            ${i+1}<div class="nav-status-bar"></div>
+        </a>`;
+    });
+}
+
+function toggleFlag(i){
+    document.getElementById(`nav-${i}`).classList.toggle('flagged');
+}
+
+function submitQuiz(){
+    let score=0;
+    currentQuizSet.forEach((q,i)=>{
+        const sel=document.querySelector(`input[name=q${i}]:checked`);
+        const ok=sel&&+sel.value===q.answer;
+        if(ok)score++;
+        q.options.forEach((_,oi)=>{
+            const l=document.getElementById(`lbl-${i}-${oi}`);
+            if(oi===q.answer)l.classList.add('correct');
+            else if(sel&&+sel.value===oi)l.classList.add('wrong');
+        });
+        document.getElementById(`nav-${i}`).classList.add(ok?'correct-nav':'wrong-nav');
+        document.getElementById(`q${i}`).classList.add('revealed');
+    });
+    const r=document.getElementById('result-box');
+    r.style.display='block';
+    r.innerHTML=`<strong>${score}/${currentQuizSet.length}</strong>`;
+    document.getElementById('retry-btn').style.display='block';
+}
+
+function retryWrongQuestions(){
+    currentQuizSet=currentQuizSet.filter((q,i)=>{
+        const s=document.querySelector(`input[name=q${i}]:checked`);
+        return !(s&&+s.value===q.answer);
+    });
+    resetQuiz(false);
+}
+</script>
+</body>
+</html>
