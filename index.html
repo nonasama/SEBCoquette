@@ -9,41 +9,18 @@
 
 <style>
 :root {
-    --bg-color: #fff0f6;
-    --text-color: #6a2c4f;
-    --card-bg: #fff9fb;
-
-    --accent: #e75480;
-    --accent-dark: #c93a6b;
-    --accent-soft: #fde1eb;
-
-    --border-color: #f1a9c3;
-    --flag-color: #e75480;
-
-    --correct-bg: #e6f7ec;
-    --correct-solid: #4caf78;
+    --bg-color: #fff2f7;
+    --text-color: #6a3355;
+    --correct-bg: #e8f8ed;
+    --correct-solid: #62b88a;
     --wrong-bg: #fdeaea;
-    --wrong-solid: #d9534f;
+    --wrong-solid: #e07b7b;
+    --flag-color: #f06fa5;
+    --border-color: #f1bfd3;
+    --card-bg: #fffafc;
+    --accent: #f2a7c3;
 }
 
-/* 🌙 DARK MODE – EYE FRIENDLY */
-body.dark {
-    --bg-color: #2b0f1f;
-    --text-color: #f3c4d8;
-    --card-bg: #3a1626;
-
-    --accent: #ff7fb8;
-    --accent-dark: #ff5fa3;
-    --accent-soft: #5a1f3b;
-
-    --border-color: #8a2f55;
-
-    /* FIXED ANSWER COLORS */
-    --correct-bg: #1f4f3a;
-    --wrong-bg: #5a1f2a;
-}
-
-/* BASE */
 body {
     font-family: 'Nunito', sans-serif;
     background: var(--bg-color);
@@ -55,7 +32,7 @@ body {
 .page-title {
     text-align: center;
     font-family: 'Press Start 2P', monospace;
-    color: var(--accent);
+    color: #f06fa5;
     font-size: 1.3rem;
     margin-bottom: 20px;
 }
@@ -84,7 +61,7 @@ body {
     right: 15px;
     cursor: pointer;
     font-size: 1.3rem;
-    color: #aaa;
+    color: #ccc;
 }
 .flag-icon.active { color: var(--flag-color); }
 
@@ -95,26 +72,8 @@ body {
     border-radius: 8px;
     cursor: pointer;
 }
-
 .correct { background: var(--correct-bg); }
 .wrong { background: var(--wrong-bg); }
-
-/* 👀 READABLE TEXT INSIDE ANSWERS (KEY FIX) */
-body.dark .correct,
-body.dark .wrong {
-    color: #f7f3f6;
-}
-
-/* EXPLANATION */
-.explanation-box {
-    display: none;
-    margin-top: 15px;
-    padding: 12px;
-    background: var(--accent-soft);
-    border-left: 4px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-}
-.revealed .explanation-box { display: block; }
 
 /* BUTTONS */
 .btn {
@@ -128,7 +87,6 @@ body.dark .wrong {
     margin-top: 10px;
     font-weight: bold;
 }
-.btn:hover { background: var(--accent-dark); }
 
 .btn-row {
     display: flex;
@@ -136,8 +94,8 @@ body.dark .wrong {
     margin-top: 10px;
 }
 
-.btn-secondary { background: #d65b8b; }
-.btn-save { background: #c93a6b; }
+.btn-secondary { background: #f2b6cb; }
+.btn-save { background: #f06fa5; }
 
 /* TEXTAREA */
 textarea {
@@ -147,8 +105,7 @@ textarea {
     border-radius: 8px;
     border: 1px solid var(--border-color);
     padding: 10px;
-    background: var(--accent-soft);
-    color: var(--text-color);
+    background: #fde6ee;
 }
 
 /* SIDEBAR */
@@ -158,7 +115,7 @@ textarea {
     height: calc(100vh - 40px);
     display: flex;
     flex-direction: column;
-    background: var(--card-bg);
+    background: white;
     padding: 15px;
     border-radius: 12px;
     border: 2px solid var(--border-color);
@@ -166,6 +123,7 @@ textarea {
 
 .sidebar-mascot {
     text-align: center;
+    margin-bottom: 10px;
 }
 .sidebar-mascot img {
     width: 110px;
@@ -173,12 +131,11 @@ textarea {
 .mascot-text {
     font-family: 'Press Start 2P', monospace;
     font-size: 0.6rem;
-    color: var(--accent);
+    color: #f06fa5;
     margin-top: 5px;
-    transition: opacity 0.3s;
 }
 
-/* NAV GRID */
+/* NAV GRID (UNCHANGED LOGIC) */
 #nav-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -199,12 +156,6 @@ textarea {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-body.dark .nav-box {
-    background: #2f1322;
-    color: #f3c4d8;
-    border-color: #8a2f55;
 }
 
 .nav-box.flagged::after {
@@ -245,30 +196,30 @@ body.dark .nav-box {
 
 <div class="main-layout">
 
+<!-- QUESTIONS -->
 <div>
     <div id="quiz-container"></div>
 
-    <button class="btn" id="finish-btn">🏁 Finish Attempt</button>
+    <button class="btn" onclick="submitQuiz()">Finish attempt...</button>
 
     <textarea id="json-input" placeholder="Paste your questions JSON here..."></textarea>
 
     <div class="btn-row">
-        <button class="btn btn-secondary" id="load-btn">📥 Load</button>
-        <button class="btn btn-save" id="download-btn">💾 Download</button>
-        <button class="btn btn-secondary" id="reset-btn">🔄 Reset</button>
+        <button class="btn btn-secondary" onclick="loadQuestions()">Load Questions</button>
+        <button class="btn btn-save" onclick="downloadQuiz()">Download Quiz</button>
+        <button class="btn btn-secondary" onclick="resetQuiz(true)">Reset</button>
     </div>
 
-    <button class="btn btn-secondary" id="retry-btn" style="display:none;">😤 Retry Wrong</button>
+    <button class="btn btn-secondary" id="retry-btn" style="display:none;" onclick="retryWrongQuestions()">Retry Wrong</button>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
 
     <div class="sidebar-mascot">
         <img src="./images/cat.gif">
         <div class="mascot-text" id="mascot-text">you got this 💕</div>
     </div>
-
-    <button class="btn btn-secondary" id="dark-btn">🌙 Night Mode</button>
 
     <div id="result-box"></div>
 
@@ -277,156 +228,120 @@ body.dark .nav-box {
 
     <div style="flex-grow:1;"></div>
 
-    <button class="btn" id="finish-btn-side">🏁 Finish Attempt</button>
+    <button class="btn" onclick="submitQuiz()">Finish Attempt 🎀</button>
 </div>
 </div>
 
 <script>
-/* ELEMENTS */
-const quizContainer = document.getElementById("quiz-container");
-const navGrid = document.getElementById("nav-grid");
-const jsonInput = document.getElementById("json-input");
-const resultBox = document.getElementById("result-box");
-const retryBtn = document.getElementById("retry-btn");
-const mascotText = document.getElementById("mascot-text");
-
-/* DARK MODE */
-document.getElementById("dark-btn").onclick = () =>
-    document.body.classList.toggle("dark");
-
-/* 🐱 MOTIVATIONAL QUOTES (FIXED) */
-
-const messagePools = {
-    normal: [
-        "you got this 💕",
-        "one question at a time 🐾",
-        "breathe… you’re okay ✨",
-        "slow is still progress 🌱"
-    ],
-    proud: [
-        "still proud of you 🥹",
-        "you survived 😭",
-        "that was hard and you did it 💗"
-    ],
-    perfect: [
-        "PERFECT SCORE OMG 🎉",
-        "GENIUS CAT APPROVES 😼",
-        "SLAY 💅"
-    ]
-};
-
-let currentMood = "normal";
-let lastMessage = "";
-
-const mascotText = document.getElementById("mascot-text");
-
+/* MOTIVATION */
+const messages = [
+    "you got this 💕",
+    "one question at a time 🐾",
+    "breathe… you’re okay ✨",
+    "future you says thanks 🎀",
+    "proud of you 💗"
+];
 setInterval(() => {
-    const pool = messagePools[currentMood];
-    let next;
-
-    do {
-        next = pool[Math.floor(Math.random() * pool.length)];
-    } while (next === lastMessage);
-
-    lastMessage = next;
-
-    mascotText.style.opacity = 0;
-    setTimeout(() => {
-        mascotText.textContent = next;
-        mascotText.style.opacity = 1;
-    }, 300);
+    document.getElementById("mascot-text").textContent =
+        messages[Math.floor(Math.random() * messages.length)];
 }, 3000);
 
-/* QUIZ LOGIC */
+/* === ORIGINAL WORKING LOGIC === */
 let questions = [];
 let currentQuizSet = [];
+let flaggedQuestions = new Set();
 
-document.getElementById("load-btn").onclick = () => {
-    if(!jsonInput.value) return alert("Paste JSON first!");
-    questions = JSON.parse(jsonInput.value);
+function loadQuestions() {
+    const input = document.getElementById("json-input").value;
+    if (!input) return alert("Paste JSON first!");
+    questions = JSON.parse(input);
     resetQuiz(true);
-};
+}
 
-document.getElementById("download-btn").onclick = () => {
-    if(!jsonInput.value) return alert("Add questions first!");
-    const html = document.documentElement.outerHTML.replace(
+function downloadQuiz() {
+    const json = document.getElementById("json-input").value;
+    if (!json) return alert("Add questions first!");
+
+    const html = document.documentElement.outerHTML;
+    const injected = html.replace(
         "let questions = [];",
-        `let questions = ${jsonInput.value};`
+        `let questions = ${json};`
     );
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));
-    a.download="quiz.html";
+
+    const blob = new Blob([injected], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "quiz.html";
     a.click();
-};
+}
 
-document.getElementById("reset-btn").onclick = () => resetQuiz(true);
-document.getElementById("finish-btn").onclick =
-document.getElementById("finish-btn-side").onclick = submitQuiz;
-retryBtn.onclick = retryWrongQuestions;
-
-function resetQuiz(full){
-    if(full) currentQuizSet=[...questions];
-    quizContainer.innerHTML="";
-    navGrid.innerHTML="";
-    resultBox.style.display="none";
-    retryBtn.style.display="none";
+function resetQuiz(full) {
+    if (full) currentQuizSet = [...questions];
+    document.getElementById("result-box").style.display = "none";
+    document.getElementById("retry-btn").style.display = "none";
     renderQuiz();
     renderNav();
 }
 
-function renderQuiz(){
-    currentQuizSet.forEach((q,i)=>{
-        quizContainer.innerHTML+=`
-        <div class="question-block" id="q-block-${i}">
+function renderQuiz() {
+    const c = document.getElementById("quiz-container");
+    c.innerHTML = "";
+    currentQuizSet.forEach((q, i) => {
+        c.innerHTML += `
+        <div class="question-block" id="q${i}">
             <div class="flag-icon" id="flag-${i}" onclick="toggleFlag(${i})">⚑</div>
-            <strong>Question ${i+1}</strong><br><br>${q.question}
-            ${q.options.map((o,oi)=>`
+            <strong>Question ${i + 1}</strong><br><br>${q.question}
+            ${q.options.map((o, oi) => `
                 <label class="option" id="lbl-${i}-${oi}">
                     <input type="radio" name="q${i}" value="${oi}"> ${o}
                 </label>`).join("")}
-            <div class="explanation-box"><strong>Explanation:</strong> ${q.explanation||"—"}</div>
         </div>`;
     });
 }
 
-function renderNav(){
-    currentQuizSet.forEach((_,i)=>{
-        navGrid.innerHTML+=`
-        <a class="nav-box" id="nav-${i}" href="#q-block-${i}">
-            ${i+1}
+function renderNav() {
+    const g = document.getElementById("nav-grid");
+    g.innerHTML = "";
+    currentQuizSet.forEach((_, i) => {
+        g.innerHTML += `
+        <a class="nav-box" id="nav-${i}" href="#q${i}">
+            ${i + 1}
             <div class="nav-status-bar"></div>
         </a>`;
     });
 }
 
-function toggleFlag(i){
+function toggleFlag(i) {
     document.getElementById(`nav-${i}`).classList.toggle("flagged");
     document.getElementById(`flag-${i}`).classList.toggle("active");
 }
 
-function submitQuiz(){
-    let score=0;
-    currentQuizSet.forEach((q,i)=>{
-        const sel=document.querySelector(`input[name=q${i}]:checked`);
-        const ok=sel && +sel.value===q.answer;
-        if(ok) score++;
-        q.options.forEach((_,oi)=>{
-            const lbl=document.getElementById(`lbl-${i}-${oi}`);
-            if(oi===q.answer) lbl.classList.add("correct");
-            else if(sel && +sel.value===oi) lbl.classList.add("wrong");
+function submitQuiz() {
+    let score = 0;
+    currentQuizSet.forEach((q, i) => {
+        const sel = document.querySelector(`input[name=q${i}]:checked`);
+        const ok = sel && +sel.value === q.answer;
+        if (ok) score++;
+
+        q.options.forEach((_, oi) => {
+            const lbl = document.getElementById(`lbl-${i}-${oi}`);
+            if (oi === q.answer) lbl.classList.add("correct");
+            else if (sel && +sel.value === oi) lbl.classList.add("wrong");
         });
-        document.getElementById(`q-block-${i}`).classList.add("revealed");
-        document.getElementById(`nav-${i}`).classList.add(ok?"correct-nav":"wrong-nav");
+
+        document.getElementById(`nav-${i}`).classList.add(ok ? "correct-nav" : "wrong-nav");
     });
-    resultBox.style.display="block";
-    resultBox.textContent=`${score} / ${currentQuizSet.length}`;
-    retryBtn.style.display="block";
+
+    const r = document.getElementById("result-box");
+    r.style.display = "block";
+    r.textContent = `${score} / ${currentQuizSet.length}`;
+    document.getElementById("retry-btn").style.display = "block";
 }
 
-function retryWrongQuestions(){
-    currentQuizSet=currentQuizSet.filter((q,i)=>{
-        const sel=document.querySelector(`input[name=q${i}]:checked`);
-        return !(sel && +sel.value===q.answer);
+function retryWrongQuestions() {
+    currentQuizSet = currentQuizSet.filter((q, i) => {
+        const sel = document.querySelector(`input[name=q${i}]:checked`);
+        return !(sel && +sel.value === q.answer);
     });
     resetQuiz(false);
 }
@@ -434,4 +349,3 @@ function retryWrongQuestions(){
 
 </body>
 </html>
-
