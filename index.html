@@ -306,6 +306,17 @@ body.simple .correct-nav .nav-status-bar {
 body.simple .wrong-nav .nav-status-bar {
     background: #666666;
 }
+/* 📜 SCROLLABLE NAVIGATION GRID */
+#nav-grid {
+    max-height: 300px;       /* adjust height if you want */
+    overflow-y: auto;
+    padding-right: 4px;     /* space for scrollbar */
+}
+
+/* smoother scrolling on mobile */
+#nav-grid {
+    -webkit-overflow-scrolling: touch;
+}
 
 
 </style>
@@ -496,6 +507,7 @@ window.addEventListener("resize", moveSidebarBeforeFinish);
 
 </body>
 </html>
+
 
 
 
